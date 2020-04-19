@@ -1,13 +1,12 @@
 import React, { useRef, useEffect } from 'react'
 import { colorToNumber } from '../utils/color'
-import { usePixelatedVideo } from '../hooks'
+import { useUserMedia, usePixelatedVideo } from '../hooks'
 
 const buildFilterString = filterObj => {
   return Object.keys(filterObj).map(filter => {
     return `${filter}(${filterObj[filter] || 1.0})`
   }).join(" ")
 }
-
 
 // debug
 let lastCalledTime;
@@ -42,7 +41,8 @@ const drawFilters = (ctx, filters) => {
 const EmojiVision = ({ palette, resolution, width, height, filters: { contrast, brightness, saturate } }) => {
   const filterString = buildFilterString({ contrast, brightness, saturate })
   const canvasRef = useRef()
-  const imageData = usePixelatedVideo({ palette, resolution, width, height, filterString })
+  const mediaStream = useUserMedia({ width, height })
+  const imageData = usePixelatedVideo({ mediaStream, palette, resolution, width, height, filterString })
 
   useEffect(() => {
     if (canvasRef.current && imageData && palette) {
@@ -81,7 +81,7 @@ const EmojiVision = ({ palette, resolution, width, height, filters: { contrast, 
 
   // TODO: stylez
   return (
-    <canvas ref={canvasRef} />
+    <canvas ref={canvasRef} style={{ width: "100%" }} />
   )
 }
 

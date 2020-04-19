@@ -1,17 +1,16 @@
 import { useRef, useEffect, useState } from 'react'
-import { useUserMedia } from './useUserMedia'
+import RgbQuant from 'rgbquant'
+import { numberToColor } from '../utils/color'
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import worker from 'workerize-loader!../worker'
+// import worker from 'workerize-loader!../worker'
 
-export const usePixelatedVideo = ({ palette, resolution, width, height, filterString }) => {
+export const usePixelatedVideo = ({ mediaStream, palette, resolution, width, height, filterString }) => {
 
   const [imageData, setImageData] = useState(null)
 
-  const mediaStream = useUserMedia({ width, height })
-
   const videoRef = useRef(document.createElement("video"))
   const canvasRef = useRef(document.createElement("canvas"))
-  const workerRef = useRef(worker())
+  // const workerRef = useRef(worker())
 
   useEffect(() => {
     let rafId;
@@ -39,10 +38,6 @@ export const usePixelatedVideo = ({ palette, resolution, width, height, filterSt
     }
 
     const render = () => {
-      if (videoRef.current.readyState === 4) {
-        rafId = requestAnimationFrame(render)
-      }
-
       ctx.filter = filterString
 
       ctx.save()
@@ -53,9 +48,23 @@ export const usePixelatedVideo = ({ palette, resolution, width, height, filterSt
 
       const { data } = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)
 
+      // offload color normalization to worker thread
+      // this gives faster FPS but laggier video than doing work on main thread
       // TODO: abort work as part of cleanup fn?
-      workerRef.current.normalizePixelData(data, palette)
-        .then(setImageData)
+      let pixelData = data
+      const paletteColors = Object.keys(palette).map(key => numberToColor(key))
+      if (paletteColors.length) {
+        const quant = new RgbQuant({
+          palette: paletteColors,
+          colors: paletteColors.length
+        })
+        pixelData = quant.reduce(pixelData)
+      }
+      setImageData(pixelData)
+
+      if (videoRef.current.readyState === 4) {
+        rafId = requestAnimationFrame(render)
+      }
     }
 
     // if srcObject isn't set, setup the video

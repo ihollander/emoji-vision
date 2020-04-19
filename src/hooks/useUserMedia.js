@@ -16,15 +16,18 @@ export const useUserMedia = ({ width, height }) => {
     }
 
     if (!mediaStream) {
+      console.log("enabling")
       enableStream()
     } else {
       return () => {
+        console.log("stopping")
         mediaStream.getTracks().forEach(track => {
           track.stop()
         })
+        setMediaStream(null)
       }
     }
-  }, [mediaStream, width, height])
+  }, [mediaStream])
 
   return mediaStream
 }
