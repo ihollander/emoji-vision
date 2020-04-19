@@ -1,0 +1,25 @@
+.palette-builder {
+  width: 640px;
+  margin: 0 auto;
+}
+
+.palette-builder textarea {
+  font: 21px/25px monospace;
+  letter-spacing: 0;
+  resize: none;
+  margin: 0 auto;
+  width: 640px;
+  min-height: calc(21px * 8);
+}
+
+.palette-builder .canvas-container {
+  margin: 0 auto;
+  width: 640px;
+  height: calc(21px * 8);
+  overflow-y: scroll;
+}
+
+.palette-builder canvas {
+  border: 1px solid blue;
+  width: 100%;
+}
