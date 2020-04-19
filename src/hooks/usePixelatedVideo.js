@@ -1,19 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
-import RgbQuant from 'rgbquant'
 import { useUserMedia } from './useUserMedia'
-import { numberToColor } from '../utils/color'
-
-const normalizePixelData = (pixelData, palette) => {
-  const paletteColors = Object.keys(palette).map(key => numberToColor(key))
-  if (paletteColors.length) {
-    const quant = new RgbQuant({
-      palette: paletteColors,
-      colors: paletteColors.length
-    })
-    pixelData = quant.reduce(pixelData)
-  }
-  return pixelData
-}
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import worker from 'workerize-loader!../worker'
 
 export const usePixelatedVideo = ({ palette, resolution, width, height, filterString }) => {
 
@@ -23,6 +11,7 @@ export const usePixelatedVideo = ({ palette, resolution, width, height, filterSt
 
   const videoRef = useRef(document.createElement("video"))
   const canvasRef = useRef(document.createElement("canvas"))
+  const workerRef = useRef(worker())
 
   useEffect(() => {
     let rafId;
@@ -64,9 +53,9 @@ export const usePixelatedVideo = ({ palette, resolution, width, height, filterSt
 
       const { data } = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)
 
-      const pixelData = normalizePixelData(data, palette)
-
-      setImageData(pixelData)
+      // TODO: abort work as part of cleanup fn?
+      workerRef.current.normalizePixelData(data, palette)
+        .then(setImageData)
     }
 
     // if srcObject isn't set, setup the video
