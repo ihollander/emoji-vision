@@ -4,10 +4,15 @@ import EmojiVision from './components/EmojiVision'
 import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
-import { useDeviceDimensions } from './hooks';
+import { useDeviceDimensions, usePaletteBuilder } from './hooks';
+
+import emoji from './emoji.json'
+const lessEmoji = emoji.slice(0, 500).join("")
 
 function App() {
-  const [palette, setPalette] = useState(null)
+  const [emoji, setEmoji] = useState(lessEmoji)
+  const palette = usePaletteBuilder(emoji)
+
   const [fontSize, setFontSize] = useState(10)
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
@@ -29,7 +34,7 @@ function App() {
           brightness={brightness} setBrightness={setBrightness}
         />
       case "PALETTE":
-        return <PaletteBuilder palette={palette} setPalette={setPalette} />
+        return <PaletteBuilder emoji={emoji} setEmoji={setEmoji} />
       default:
         return null
     }
@@ -38,12 +43,6 @@ function App() {
   useEffect(() => {
     let width = 640
     let height = 480
-
-    // if (orientation === "portrait") {
-    //   width = 640
-    //   height = 640
-    // }
-
     setConstraints({
       video: {
         width: { max: width / fontSize },

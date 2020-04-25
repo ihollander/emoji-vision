@@ -96,8 +96,8 @@ const EmojiVision = ({ palette, fontSize, facingMode, mirror, constraints, orien
       ctx.restore()
 
       // debug / FPS
-      drawFps(ctx)
-      drawFilters(ctx, { contrast, brightness, saturate, width, height, orientation, facingMode, activeCamera, status })
+      // drawFps(ctx)
+      // drawFilters(ctx, { contrast, brightness, saturate, width, height, orientation, facingMode, activeCamera, status })
     }
   }, [imageData, palette, fontSize, contrast, brightness, saturate, height, width, orientation, facingMode, mirror, activeCamera, status])
 
