@@ -1,43 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PaletteBuilder from './components/PaletteBuilder/index'
 import EmojiVision from './components/EmojiVision'
 import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
+import { useDeviceDimensions } from './hooks';
 
 function App() {
   const [palette, setPalette] = useState(null)
-  const [resolution, setResolution] = useState("10")
+  const [fontSize, setFontSize] = useState(10)
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
   const [brightness, setBrightness] = useState("1.0")
+  const [facingMode, setFacingMode] = useState("user")
+  const { orientation, videoDeviceCount } = useDeviceDimensions()
 
   const [activeModal, setActiveModal] = useState("NONE")
 
-  const [width, setWidth] = useState(window.innerWidth)
-  const [height, setHeight] = useState(window.innerHeight)
-
-  const vWidth = Math.min(Math.max(width, 480), 960)
-  const vHeight = Math.min(Math.max(height, 480), 960)
-
-  const handleResizeWindow = () => {
-    setWidth(window.innerWidth)
-    setHeight(window.innerHeight)
-  }
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResizeWindow)
-
-    return () => {
-      window.removeEventListener("resize", handleResizeWindow)
-    }
-  }, [])
+  const [constraints, setConstraints] = useState(null)
 
   const getModalContents = () => {
     switch (activeModal) {
       case "CONTROLS":
         return <Controls
-          resolution={resolution} setResolution={setResolution}
+          fontSize={fontSize} setFontSize={setFontSize}
           contrast={contrast} setContrast={setContrast}
           saturate={saturate} setSaturate={setSaturate}
           brightness={brightness} setBrightness={setBrightness}
@@ -49,16 +35,42 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    let width = 640
+    let height = 480
+
+    // if (orientation === "portrait") {
+    //   width = 640
+    //   height = 640
+    // }
+
+    setConstraints({
+      video: {
+        width: { max: width / fontSize },
+        height: { max: height / fontSize },
+        facingMode
+      }
+    })
+  }, [orientation, fontSize, facingMode])
+
   return (
     <div className="App">
-      <Navbar activeModal={activeModal} setActiveModal={setActiveModal} />
-      <main style={{ position: "relative" }}>
-        {palette && <EmojiVision
+      <Navbar
+        activeModal={activeModal}
+        setActiveModal={setActiveModal}
+        facingMode={facingMode}
+        setFacingMode={setFacingMode}
+        videoDeviceCount={videoDeviceCount}
+      />
+      <main style={{ position: "relative", minHeight: "80vh" }}>
+        {constraints && palette && <EmojiVision
           palette={palette}
-          resolution={resolution}
+          fontSize={fontSize}
+          mirror={facingMode === "user"}
+          facingMode={facingMode}
+          constraints={constraints}
           filters={{ brightness, saturate, contrast }}
-          width={vWidth}
-          height={vHeight}
+          orientation={orientation}
         />}
         {/* <div style={{ width: "100%", height: "50vh", backgroundColor: "rebeccapurple" }} /> */}
         <Modal show={activeModal !== "NONE"}>

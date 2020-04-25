@@ -38,27 +38,48 @@ const drawFilters = (ctx, filters) => {
   })
 }
 
-const EmojiVision = ({ palette, resolution, width, height, filters: { contrast, brightness, saturate } }) => {
+// const constraints = {
+//   video: {
+//     width: { max: 80 },
+//     height: { max: 60 }
+//   }
+// }
+
+const EmojiVision = ({ palette, fontSize, facingMode, mirror, constraints, orientation, filters: { contrast, brightness, saturate } }) => {
+
   const filterString = buildFilterString({ contrast, brightness, saturate })
+
   const canvasRef = useRef()
-  const mediaStream = useUserMedia({ width, height })
-  const imageData = usePixelatedVideo({ mediaStream, palette, resolution, width, height, filterString })
+  // move this up?
+  // const { mediaStream } = useUserMedia(constraints)
+  const { imageData, width, height, activeCamera, status } = usePixelatedVideo({ constraints, palette, filterString })
 
   useEffect(() => {
     if (canvasRef.current && imageData && palette) {
+
+      const cWidth = width * fontSize
+      const cHeight = height * fontSize
       // setup canvas
-      canvasRef.current.width = width
-      canvasRef.current.height = height
+
+      canvasRef.current.width = cWidth
+      canvasRef.current.height = cHeight
       const ctx = canvasRef.current.getContext('2d')
-      ctx.font = `${resolution}px sans-serif`
+      ctx.font = `${fontSize}px sans-serif`
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
+
+      ctx.save()
+
+      if (mirror) {
+        ctx.translate(ctx.canvas.width, 0)
+        ctx.scale(-1, 1)
+      }
 
       // iterate thru pixelData
       for (let i = 0; i < imageData.length; i += 4) {
         // use compressed canvas aspect ratio to get 2D coordinates from 1D pixel array
-        const y = Math.floor((i / 4) / (width / resolution)) * resolution
-        const x = ((i / 4) % (width / resolution)) * resolution
+        const y = Math.floor((i / 4) / (cWidth / fontSize)) * fontSize
+        const x = ((i / 4) % (cWidth / fontSize)) * fontSize
 
         // read RGB pixels from imageData
         const r = imageData[i]
@@ -72,12 +93,13 @@ const EmojiVision = ({ palette, resolution, width, height, filters: { contrast, 
         // ctx.fillStyle = `rgb(${r},${g},${b})`
         // ctx.fillRect(x, y, resolution, resolution)
       }
+      ctx.restore()
 
       // debug / FPS
       drawFps(ctx)
-      drawFilters(ctx, { contrast, brightness, saturate })
+      drawFilters(ctx, { contrast, brightness, saturate, width, height, orientation, facingMode, activeCamera, status })
     }
-  }, [imageData, palette, resolution, width, height, contrast, brightness, saturate])
+  }, [imageData, palette, fontSize, contrast, brightness, saturate, height, width, orientation, facingMode, mirror, activeCamera, status])
 
   // TODO: stylez
   return (

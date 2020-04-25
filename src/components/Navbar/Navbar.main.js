@@ -6,7 +6,9 @@ const Emoji = ({ character, title }) => (
 )
 
 const Navbar = ({
-  activeModal, setActiveModal
+  activeModal, setActiveModal,
+  facingMode, setFacingMode,
+  videoDeviceCount
 }) => {
   return (
     <Header>
@@ -20,9 +22,9 @@ const Navbar = ({
         <Button onClick={() => setActiveModal(activeModal === "CONTROLS" ? "NONE" : "CONTROLS")}>
           <Emoji title="Wrench" character="🔧" />
         </Button>
-        <Button>
-          <Emoji title="Reverse" character="🙃" />
-        </Button>
+        {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>
+          <Emoji title="Reverse" character={facingMode === "user" ? "🙃" : "🙂"} />
+        </Button>}
       </Nav>
     </Header>
   )

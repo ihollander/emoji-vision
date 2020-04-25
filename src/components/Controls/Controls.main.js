@@ -2,7 +2,7 @@ import React from 'react'
 import { InputContainer } from './style'
 
 const Controls = ({
-  resolution, setResolution,
+  fontSize, setFontSize,
   brightness, setBrightness,
   saturate, setSaturate,
   contrast, setContrast
@@ -11,9 +11,9 @@ const Controls = ({
     <>
       <h1>Settings</h1>
       <InputContainer>
-        <label>Resolution</label>
-        <select value={resolution} onChange={e => setResolution(e.target.value)}>
-          {[4, 8, 10, 12, 16].map(opt => <option key={opt} value={opt}>{opt}px</option>)}
+        <label>Emoji Size</label>
+        <select value={fontSize} onChange={e => setFontSize(parseInt(e.target.value))}>
+          {[4, 8, 10, 16].map(opt => <option key={opt} value={opt}>{opt}px</option>)}
         </select>
       </InputContainer>
       <InputContainer>

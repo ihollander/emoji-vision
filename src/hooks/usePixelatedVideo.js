@@ -1,81 +1,54 @@
 import { useRef, useEffect, useState } from 'react'
 import RgbQuant from 'rgbquant'
 import { numberToColor } from '../utils/color'
-// eslint-disable-next-line import/no-webpack-loader-syntax
-// import worker from 'workerize-loader!../worker'
+import { useUserMedia } from './useUserMedia'
 
-export const usePixelatedVideo = ({ mediaStream, palette, resolution, width, height, filterString }) => {
+export const usePixelatedVideo = ({ constraints, palette, filterString }) => {
+  const { width, height, status, mediaStream, activeCamera } = useUserMedia(constraints.video.width.max, constraints.video.height.max, constraints.video.facingMode)
 
   const [imageData, setImageData] = useState(null)
 
   const videoRef = useRef(document.createElement("video"))
   const canvasRef = useRef(document.createElement("canvas"))
-  // const workerRef = useRef(worker())
 
+  // setup canvas element
   useEffect(() => {
-    let rafId;
     let ctx;
-
-    const setupVideo = () => {
-      videoRef.current.autoplay = true
-      videoRef.current.height = height
-      videoRef.current.width = width
-      videoRef.current.srcObject = mediaStream
-      videoRef.current.addEventListener("canplay", () => {
-        setupCanvas()
-        rafId = requestAnimationFrame(render)
-      })
-    }
-
-    const setupCanvas = () => {
-      const compressedHeight = Math.floor(height / resolution)
-      const compressedWidth = Math.floor(width / resolution)
-      if (canvasRef.current.height !== compressedHeight && canvasRef.current.width !== compressedWidth) {
-        canvasRef.current.height = compressedHeight
-        canvasRef.current.width = compressedWidth
-      }
-      ctx = canvasRef.current.getContext('2d')
-    }
+    let rafId;
 
     const render = () => {
-      ctx.filter = filterString
-
-      ctx.save()
-      ctx.translate(canvasRef.current.width, 0)
-      ctx.scale(-1, 1)
-      ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
-      ctx.restore()
-
-      const { data } = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)
-
-      // offload color normalization to worker thread
-      // this gives faster FPS but laggier video than doing work on main thread
-      // TODO: abort work as part of cleanup fn?
-      let pixelData = data
-      const paletteColors = Object.keys(palette).map(key => numberToColor(key))
-      if (paletteColors.length) {
-        const quant = new RgbQuant({
-          palette: paletteColors,
-          colors: paletteColors.length
-        })
-        pixelData = quant.reduce(pixelData)
-      }
-      setImageData(pixelData)
-
       if (videoRef.current.readyState === 4) {
-        rafId = requestAnimationFrame(render)
+        ctx.filter = filterString
+        ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
+
+        // offload color normalization to worker thread?
+        // this gives faster FPS but laggier video than doing work on main thread
+        // TODO: abort work as part of cleanup fn?
+        let pixelData = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height).data
+
+        const paletteColors = Object.keys(palette).map(key => numberToColor(key))
+
+        if (paletteColors.length) {
+          const quant = new RgbQuant({
+            palette: paletteColors,
+            colors: paletteColors.length
+          })
+          pixelData = quant.reduce(pixelData)
+        }
+
+        setImageData(pixelData)
+      } else {
+        setImageData(new Uint32Array())
       }
+
+      // loop it
+      rafId = requestAnimationFrame(render)
     }
 
-    // if srcObject isn't set, setup the video
-    if (mediaStream && videoRef.current && canvasRef.current && !videoRef.current.srcObject) {
-      // setupVideo will call setup canvas and render when video is playable
-      setupVideo()
-    }
-
-    // if srcObject has been set (but something else has changed), re-run canvas config and start render again
-    if (videoRef.current.srcObject) {
-      setupCanvas()
+    if (height > 0 && width > 0) {
+      canvasRef.current.height = height
+      canvasRef.current.width = width
+      ctx = canvasRef.current.getContext('2d')
       rafId = requestAnimationFrame(render)
     }
 
@@ -83,7 +56,18 @@ export const usePixelatedVideo = ({ mediaStream, palette, resolution, width, hei
       // cancel animation and stop loop during cleanup
       cancelAnimationFrame(rafId)
     }
-  }, [mediaStream, palette, resolution, height, width, filterString])
+  }, [width, height, filterString, palette])
 
-  return imageData
+  // setup video element
+  useEffect(() => {
+    const video = videoRef.current
+
+    if (mediaStream && video.srcObject !== mediaStream) {
+      video.srcObject = mediaStream
+      video.autoplay = true
+    }
+
+  }, [mediaStream, status])
+
+  return { imageData, width, height, activeCamera, status }
 }
