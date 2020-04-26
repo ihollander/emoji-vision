@@ -27,7 +27,7 @@ function App() {
   const { videoDevices } = useMediaDeviceInfo()
 
   // App UI state
-  const [activeModal, setActiveModal] = useState("NONE")
+  const [activeModal, setActiveModal] = useState("CONTROLS")
 
   const canvasRef = useRef()
 
@@ -61,20 +61,23 @@ function App() {
         setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
-      <main style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+      {/* style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }} */}
+      <main>
         {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
           canvasRef={canvasRef}
           debug={debug}
           palette={palette}
           paletteColors={paletteColors}
           fontSize={fontSize}
-          filters={{ brightness, saturate, contrast }}
+          brightness={brightness}
+          saturate={saturate}
+          contrast={contrast}
           facingMode={facingMode}
         />}
+        <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
+          {getModalContents()}
+        </Modal>
       </main>
-      <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
-        {getModalContents()}
-      </Modal>
     </div>
   )
 }

@@ -1,37 +1,52 @@
 import styled from 'styled-components'
 
-export const ControlMenu = styled.div`
+export const InputContainer = styled.div`
+  margin: 4rem 0;
+  width: 100%;
   display: flex;
-  justify-content: center;
-  width: 400px;
-  height: 100%;
-  margin: 0 auto;
-  flex-wrap: wrap;
-  color: white;
-  background-color: rgba(0,0,0,0.5);
-  padding: 2rem;
+  align-items: center;
+  justify-content: space-evenly;
+`
 
-  h1 {
-    text-decoration: underline;
+export const Range = styled.div`
+  position: relative;
+  width: 100%;
+  border-radius: 5px;
+  background: #ddd;
+  height: 0.75rem;
+  display: flex;
+  align-items: center;
+`
+
+export const RangeBackground = styled.div` 
+  position: relative;
+  height: 100%;
+`
+
+export const RangeThumb = styled.div`
+  background-color: transparent;
+  font-size: 2rem;
+  position: absolute;
+  cursor: pointer;
+
+  span::selection { 
+    background: none; 
   }
 `
 
-export const InputContainer = styled.div`
-  margin: 1rem 0;
+export const ButtonSelector = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
+  border-radius: 5px;
+  background-color: hsl(0, 0%, 50%);
 
-  label {
-    width: 20%;
+  > div {
+    cursor: pointer;
   }
 
-  input {
-    width: 70%;
-  }
-  
-  select {
-    width: 70%;
+  span::selection { 
+    background: none; 
   }
 `

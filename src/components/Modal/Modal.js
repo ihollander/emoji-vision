@@ -19,13 +19,9 @@ export const StyledModal = styled.div`
 `
 
 export const ModalInner = styled.div`
-  display: flex;
-  justify-content: center;
   width: 400px;
   height: 100%;
   margin: 0 auto;
-  flex-wrap: wrap;
-  color: white;
   background-color: rgba(0,0,0,0.5);
   padding: 2rem;
 

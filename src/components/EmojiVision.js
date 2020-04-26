@@ -8,7 +8,9 @@ const EmojiVision = ({
   palette,
   paletteColors,
   fontSize,
-  filters,
+  brightness,
+  saturate,
+  contrast,
   facingMode,
   debug
 }) => {
@@ -22,7 +24,7 @@ const EmojiVision = ({
 
   const { status: mediaStatus, mediaStream, activeCamera } = useUserMedia(orientation, facingMode)
 
-  const { canvasWidth: pixelatedCanvasWidth, canvasHeight: pixelatedCanvasHeight, imageData } = usePixelatedVideo({ fontSize, mediaStream, paletteColors, filters })
+  const { canvasWidth: pixelatedCanvasWidth, canvasHeight: pixelatedCanvasHeight, imageData } = usePixelatedVideo({ fontSize, mediaStream, paletteColors, brightness, saturate, contrast })
 
   const emojiCanvasWidth = pixelatedCanvasWidth * fontSize
   const emojiCanvasHeight = pixelatedCanvasHeight * fontSize
@@ -115,11 +117,10 @@ const EmojiVision = ({
         lastCalledTimeRef.current = performance.now()
       }
 
-      const { contrast, brightness, saturate } = filters
       const fps = fpsRef.current.toFixed(2)
-      drawFilters({ fps, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
+      drawFilters({ fps, screenWidth, screenHeight, pixelatedCanvasWidth, pixelatedCanvasHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
     }
-  }, [canvasRef, debug, imageData, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, filters, orientation, mediaStatus])
+  }, [canvasRef, debug, imageData, screenWidth, screenHeight, pixelatedCanvasWidth, pixelatedCanvasHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, contrast, brightness, saturate, orientation, mediaStatus])
 
 
   // TODO: fix max width on aspect ratio

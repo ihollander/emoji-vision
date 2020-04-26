@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { Header, Logo, Nav, Button } from './style'
 
 const Emoji = ({ character, title }) => (

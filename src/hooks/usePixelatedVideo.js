@@ -3,9 +3,14 @@ import RgbQuant from 'rgbquant'
 // TODO: offload color normalization to worker thread?
 // this gives faster FPS but laggier video than doing work on main thread
 // also need to figure out how to abort worker in cleanup
-
-
-export const usePixelatedVideo = ({ fontSize, mediaStream, paletteColors, filters }) => {
+export const usePixelatedVideo = ({
+  fontSize,
+  mediaStream,
+  paletteColors,
+  brightness,
+  saturate,
+  contrast
+}) => {
   // imageData is the array of normalized pixels that will be returned
   const [imageData, setImageData] = useState(null)
 
@@ -23,17 +28,25 @@ export const usePixelatedVideo = ({ fontSize, mediaStream, paletteColors, filter
   // canvas will handle filter and let us analyze pixel data
   const canvasRef = useRef(document.createElement("canvas"))
 
+  // rafId keeps track of requestAnimationFrame id
+  const rafIdRef = useRef()
+
   useEffect(() => {
     const ctx = canvasRef.current.getContext('2d')
-    let rafId;
 
     // render helper
     const render = () => {
+      // setup next loop
+      rafIdRef.current = requestAnimationFrame(render)
+
+      // if video is ready
       if (videoRef.current.readyState === 4) {
         // apply filters
+        const filters = { brightness, saturate, contrast }
         const filterString = Object.keys(filters).map(filter => {
           return `${filter}(${filters[filter] || 1.0})`
         }).join(" ")
+        console.log(filterString)
         ctx.filter = filterString
 
         // draw video
@@ -50,20 +63,17 @@ export const usePixelatedVideo = ({ fontSize, mediaStream, paletteColors, filter
 
         setImageData(pixelData)
       }
-
-      // loop it
-      rafId = requestAnimationFrame(render)
     }
 
     if (canvasWidth > 0 && canvasHeight > 0) {
-      rafId = requestAnimationFrame(render)
+      rafIdRef.current = requestAnimationFrame(render)
     }
 
     return () => {
       // cancel animation and stop loop during cleanup
-      cancelAnimationFrame(rafId)
+      cancelAnimationFrame(rafIdRef.current)
     }
-  }, [canvasWidth, canvasHeight, fontSize, filters, paletteColors])
+  }, [canvasWidth, canvasHeight, brightness, saturate, contrast, paletteColors])
 
   // setup canvas width/height from changes to video width/height + font size
   useEffect(() => {
