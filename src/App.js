@@ -61,7 +61,7 @@ function App() {
         setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
-      <main style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+      <main style={{ position: "relative" }}>
         {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
           canvasRef={canvasRef}
           debug={debug}
@@ -73,10 +73,10 @@ function App() {
           contrast={contrast}
           facingMode={facingMode}
         />}
-        <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
-          {getModalContents()}
-        </Modal>
       </main>
+      <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
+        {getModalContents()}
+      </Modal>
     </div>
   )
 }
