@@ -50,7 +50,7 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <>
       <Navbar
         canvasRef={canvasRef}
         activeModal={activeModal}
@@ -61,7 +61,7 @@ function App() {
         setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
-      <main style={{ position: "relative" }}>
+      <main style={{ position: "relative", margin: "2rem 0" }}>
         {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
           canvasRef={canvasRef}
           debug={debug}
@@ -77,7 +77,7 @@ function App() {
       <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
         {getModalContents()}
       </Modal>
-    </div>
+    </>
   )
 }
 

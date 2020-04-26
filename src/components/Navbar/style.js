@@ -5,8 +5,9 @@ export const Header = styled.header`
   justify-content: space-between;
   align-items: center;
   font-size: 2rem;
-  background-color: rgba(55, 55, 55, 0.8);
+  background-color: rebeccapurple;
   z-index: 1;
+  box-shadow: 0px 2px 4px #333;
 `
 
 export const Nav = styled.nav`

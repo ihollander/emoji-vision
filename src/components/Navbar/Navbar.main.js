@@ -1,9 +1,6 @@
 import React, { useRef } from 'react'
+import Emoji from '../Shared/Emoji'
 import { Header, Logo, Nav, Button } from './style'
-
-const Emoji = ({ character, title }) => (
-  <span role="img" aria-label={title}>{character}</span>
-)
 
 const Navbar = ({
   canvasRef,
@@ -23,20 +20,20 @@ const Navbar = ({
   return (
     <Header>
       <Logo onClick={handleDownload} ref={logoRef}>
-        <Emoji title="Camera" character="📷" />
+        <Emoji label="Camera" emoji="📷" />
       </Logo>
       <Nav>
         {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>
-          <Emoji title="Reverse" character={facingMode === "user" ? "🙃" : "🙂"} />
+          <Emoji label="Reverse" emoji={facingMode === "user" ? "🙃" : "🙂"} />
         </Button>}
         <Button onClick={() => setActiveModal(activeModal === "PALETTE" ? "NONE" : "PALETTE")}>
-          <Emoji title="Palette" character="🎨" />
+          <Emoji label="Palette" emoji="🎨" />
         </Button>
         <Button onClick={() => setActiveModal(activeModal === "CONTROLS" ? "NONE" : "CONTROLS")}>
-          <Emoji title="Wrench" character="🔧" />
+          <Emoji label="Wrench" emoji="🔧" />
         </Button>
         <Button onClick={() => setDebug(!debug)}>
-          <Emoji title="Palette" character={debug ? "🦋" : "🐛"} />
+          <Emoji label="Palette" emoji={debug ? "🦋" : "🐛"} />
         </Button>
       </Nav>
     </Header>

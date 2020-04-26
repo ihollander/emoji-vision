@@ -33,8 +33,8 @@ const EmojiVision = ({
   // setup canvas
   useEffect(() => {
     if (canvasRef.current && emojiCanvasWidth && emojiCanvasHeight) {
-      canvasRef.current.width = emojiCanvasWidth
-      canvasRef.current.height = emojiCanvasHeight
+      canvasRef.current.width = emojiCanvasWidth * 2
+      canvasRef.current.height = emojiCanvasHeight * 2
     }
   }, [canvasRef, emojiCanvasWidth, emojiCanvasHeight])
 
@@ -44,9 +44,9 @@ const EmojiVision = ({
       // setup context
       const ctx = canvasRef.current.getContext('2d')
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-      ctx.font = `${fontSize}px sans-serif`
-      ctx.textAlign = "center"
-      ctx.textBaseline = "middle"
+      ctx.font = `${fontSize * 2}px sans-serif`
+      ctx.textAlign = "left"
+      ctx.textBaseline = "top"
 
       // mirror if the camera is facing user
       ctx.save()
@@ -76,9 +76,9 @@ const EmojiVision = ({
         // ctx.fillRect(nextX, nextY, 16, 16)
 
         // offset next position
-        nextX += fontSize
+        nextX += fontSize * 2
         if (nextX >= ctx.canvas.width) {
-          nextY += fontSize
+          nextY += fontSize * 2
           nextX = 0
         }
       }

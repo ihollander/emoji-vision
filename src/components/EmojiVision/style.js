@@ -6,6 +6,7 @@ export const CanvasContainer = styled.div`
 
   canvas {
     width: 100%;
-    max-height: 100vh
+    max-height: calc(100vh - 6rem);
+    background-color: #FFF8E7;
   }
 `
