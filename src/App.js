@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PaletteBuilder from './components/PaletteBuilder/index'
-import EmojiVision from './components/EmojiVision'
+import EmojiVision from './components/EmojiVision/EmojiVision.main'
 import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
@@ -27,7 +27,7 @@ function App() {
   const { videoDevices } = useMediaDeviceInfo()
 
   // App UI state
-  const [activeModal, setActiveModal] = useState("CONTROLS")
+  const [activeModal, setActiveModal] = useState("NONE")
 
   const canvasRef = useRef()
 
@@ -61,8 +61,7 @@ function App() {
         setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
-      {/* style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }} */}
-      <main>
+      <main style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
         {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
           canvasRef={canvasRef}
           debug={debug}

@@ -46,7 +46,6 @@ export const usePixelatedVideo = ({
         const filterString = Object.keys(filters).map(filter => {
           return `${filter}(${filters[filter] || 1.0})`
         }).join(" ")
-        console.log(filterString)
         ctx.filter = filterString
 
         // draw video

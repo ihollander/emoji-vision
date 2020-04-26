@@ -3,7 +3,7 @@ import Slider from './Slider'
 import { InputContainer, ButtonSelector } from './style'
 import Emoji from '../Shared/Emoji'
 
-const SizeSelector = ({ emoji, label, size, onClick }) => (
+const SizeSelector = ({ emoji, label, size, selected, onClick }) => (
   <div onClick={onClick} style={{ fontSize: `${size * 3}px` }}>
     <Emoji emoji={emoji} label={label} />
   </div>
@@ -21,12 +21,12 @@ const Controls = ({
     <>
       <InputContainer>
         <ButtonSelector>
-          {sizes.map(size => <SizeSelector key={size} emoji="📏" label="Size" size={size} onClick={() => setFontSize(size)} />)}
+          {sizes.map(size => <SizeSelector key={size} emoji="😀" label="Size" selected={fontSize === size} size={size} onClick={() => setFontSize(size)} />)}
         </ButtonSelector>
       </InputContainer>
       <InputContainer>
         <Slider
-          emoji="☀️"
+          emoji="💡"
           label="brightness"
           value={brightness}
           onChange={setBrightness}

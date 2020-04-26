@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react'
-import { colorToNumber } from '../utils/color'
-import { useDeviceDimensions, useUserMedia, usePixelatedVideo } from '../hooks'
-import * as userMediaStatus from '../constants/userMedia'
+import { CanvasContainer } from './style'
+import { colorToNumber } from '../../utils/color'
+import { useDeviceDimensions, useUserMedia, usePixelatedVideo } from '../../hooks'
+import * as userMediaStatus from '../../constants/userMedia'
 
 const EmojiVision = ({
   canvasRef,
@@ -122,13 +123,10 @@ const EmojiVision = ({
     }
   }, [canvasRef, debug, imageData, screenWidth, screenHeight, pixelatedCanvasWidth, pixelatedCanvasHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, contrast, brightness, saturate, orientation, mediaStatus])
 
-
-  // TODO: fix max width on aspect ratio
   return (
-    <canvas ref={canvasRef} style={{
-      width: "100%",
-      maxHeight: "100vh",
-    }} />
+    <CanvasContainer>
+      <canvas ref={canvasRef} />
+    </CanvasContainer>
   )
 }
 
