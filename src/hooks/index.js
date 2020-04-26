@@ -1,13 +1,13 @@
-import { useAnimatedCanvas } from './useAnimatedCanvas'
 import { usePixelatedVideo } from './usePixelatedVideo'
 import { useUserMedia } from './useUserMedia'
+import { useMediaDeviceInfo } from './useMediaDeviceInfo'
 import { useDeviceDimensions } from './useDeviceDimensions'
 import { usePaletteBuilder } from './usePaletteBuilder'
 
 export {
-  useAnimatedCanvas,
   usePixelatedVideo,
   useUserMedia,
+  useMediaDeviceInfo,
   useDeviceDimensions,
   usePaletteBuilder
 }

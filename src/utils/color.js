@@ -39,7 +39,8 @@ export const analyzePixels = imageData => {
     }
   }
 
-  const [dominant] = quantize(pixels, 2).palette()
+  const quantized = quantize(pixels, 2)
+  const dominant = quantized ? quantized.palette()[0] : null
   const transparency = transparentPixels / pixels.length
   return { dominant, transparency, sqrt, facDominant, simple }
 }

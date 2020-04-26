@@ -1,29 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PaletteBuilder from './components/PaletteBuilder/index'
 import EmojiVision from './components/EmojiVision'
 import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
-import { useDeviceDimensions, usePaletteBuilder } from './hooks';
+import { useMediaDeviceInfo, usePaletteBuilder } from './hooks';
+import * as paletteBuilderStatus from './constants/paletteBuilder'
 
 import emoji from './emoji.json'
 const lessEmoji = emoji.slice(0, 500).join("")
 
 function App() {
+  // emoji array used to build palette
   const [emoji, setEmoji] = useState(lessEmoji)
-  const palette = usePaletteBuilder(emoji)
+  const { palette, paletteColors, status: paletteStatus } = usePaletteBuilder(emoji)
 
+  // video settings
   const [fontSize, setFontSize] = useState(10)
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
   const [brightness, setBrightness] = useState("1.0")
   const [facingMode, setFacingMode] = useState("user")
-  const { orientation, videoDeviceCount } = useDeviceDimensions()
 
+  // device info
+  const { videoDevices } = useMediaDeviceInfo()
+
+  // App UI state
   const [activeModal, setActiveModal] = useState("NONE")
 
-  const [constraints, setConstraints] = useState(null)
+  // this needs work...
+  // useEffect(() => {
+  //   let width = 640
+  //   let height = 480
+  //   setConstraints({
+  //     video: {
+  //       width: { max: width / fontSize },
+  //       height: { max: height / fontSize },
+  //       facingMode
+  //     }
+  //   })
+  // }, [orientation, fontSize, facingMode])
 
+
+  // Render helpers
   const getModalContents = () => {
     switch (activeModal) {
       case "CONTROLS":
@@ -40,18 +59,6 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    let width = 640
-    let height = 480
-    setConstraints({
-      video: {
-        width: { max: width / fontSize },
-        height: { max: height / fontSize },
-        facingMode
-      }
-    })
-  }, [orientation, fontSize, facingMode])
-
   return (
     <div className="App">
       <Navbar
@@ -59,19 +66,16 @@ function App() {
         setActiveModal={setActiveModal}
         facingMode={facingMode}
         setFacingMode={setFacingMode}
-        videoDeviceCount={videoDeviceCount}
+        videoDeviceCount={videoDevices.length}
       />
       <main style={{ position: "relative", minHeight: "80vh" }}>
-        {constraints && palette && <EmojiVision
+        {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
           palette={palette}
+          paletteColors={paletteColors}
           fontSize={fontSize}
-          mirror={facingMode === "user"}
-          facingMode={facingMode}
-          constraints={constraints}
           filters={{ brightness, saturate, contrast }}
-          orientation={orientation}
+          facingMode={facingMode}
         />}
-        {/* <div style={{ width: "100%", height: "50vh", backgroundColor: "rebeccapurple" }} /> */}
         <Modal show={activeModal !== "NONE"}>
           {getModalContents()}
         </Modal>

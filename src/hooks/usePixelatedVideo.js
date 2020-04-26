@@ -1,44 +1,48 @@
 import { useRef, useEffect, useState } from 'react'
 import RgbQuant from 'rgbquant'
-import { numberToColor } from '../utils/color'
-import { useUserMedia } from './useUserMedia'
+// TODO: offload color normalization to worker thread?
+// this gives faster FPS but laggier video than doing work on main thread
+// also need to figure out how to abort worker in cleanup
 
-export const usePixelatedVideo = ({ constraints, palette, filterString }) => {
-  const { width, height, status, mediaStream, activeCamera } = useUserMedia(constraints.video.width.max, constraints.video.height.max, constraints.video.facingMode)
 
+export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, filters }) => {
+  // imageData is the array of normalized pixels that will be returned
   const [imageData, setImageData] = useState(null)
 
+  // video element will receive mediaStream as srcObject
   const videoRef = useRef(document.createElement("video"))
+
+  // canvas will handle filter and let us analyze pixel data
   const canvasRef = useRef(document.createElement("canvas"))
 
-  // setup canvas element
   useEffect(() => {
-    let ctx;
+    const ctx = canvasRef.current.getContext('2d')
     let rafId;
 
+    // render helper
     const render = () => {
       if (videoRef.current.readyState === 4) {
+        const { width, height } = canvasRef.current
+
+        // apply filters
+        const filterString = Object.keys(filters).map(filter => {
+          return `${filter}(${filters[filter] || 1.0})`
+        }).join(" ")
         ctx.filter = filterString
-        ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
 
-        // offload color normalization to worker thread?
-        // this gives faster FPS but laggier video than doing work on main thread
-        // TODO: abort work as part of cleanup fn?
-        let pixelData = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height).data
+        // draw video
+        ctx.drawImage(videoRef.current, 0, 0, width, height)
 
-        const paletteColors = Object.keys(palette).map(key => numberToColor(key))
+        let pixelData = ctx.getImageData(0, 0, width, height).data
 
-        if (paletteColors.length) {
-          const quant = new RgbQuant({
-            palette: paletteColors,
-            colors: paletteColors.length
-          })
-          pixelData = quant.reduce(pixelData)
-        }
+        const quant = new RgbQuant({
+          palette: paletteColors,
+          colors: paletteColors.length
+        })
+        pixelData = quant.reduce(pixelData)
+
 
         setImageData(pixelData)
-      } else {
-        setImageData(new Uint32Array())
       }
 
       // loop it
@@ -48,7 +52,6 @@ export const usePixelatedVideo = ({ constraints, palette, filterString }) => {
     if (height > 0 && width > 0) {
       canvasRef.current.height = height
       canvasRef.current.width = width
-      ctx = canvasRef.current.getContext('2d')
       rafId = requestAnimationFrame(render)
     }
 
@@ -56,7 +59,7 @@ export const usePixelatedVideo = ({ constraints, palette, filterString }) => {
       // cancel animation and stop loop during cleanup
       cancelAnimationFrame(rafId)
     }
-  }, [width, height, filterString, palette])
+  }, [width, height, filters, paletteColors])
 
   // setup video element
   useEffect(() => {
@@ -66,8 +69,7 @@ export const usePixelatedVideo = ({ constraints, palette, filterString }) => {
       video.srcObject = mediaStream
       video.autoplay = true
     }
+  }, [mediaStream])
 
-  }, [mediaStream, status])
-
-  return { imageData, width, height, activeCamera, status }
+  return { imageData, width, height }
 }
