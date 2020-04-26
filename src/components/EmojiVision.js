@@ -4,6 +4,7 @@ import { useDeviceDimensions, useUserMedia, usePixelatedVideo } from '../hooks'
 import * as userMediaStatus from '../constants/userMedia'
 
 const EmojiVision = ({
+  canvasRef,
   palette,
   paletteColors,
   fontSize,
@@ -14,8 +15,6 @@ const EmojiVision = ({
 
   const { orientation, screenWidth, screenHeight } = useDeviceDimensions()
   const deviceAspectRatio = screenWidth / screenHeight
-
-  const canvasRef = useRef()
 
   // debug
   const fpsRef = useRef()
@@ -30,11 +29,11 @@ const EmojiVision = ({
 
   // setup canvas
   useEffect(() => {
-    if (emojiCanvasWidth && emojiCanvasHeight) {
+    if (canvasRef.current && emojiCanvasWidth && emojiCanvasHeight) {
       canvasRef.current.width = emojiCanvasWidth
       canvasRef.current.height = emojiCanvasHeight
     }
-  }, [emojiCanvasWidth, emojiCanvasHeight, fontSize])
+  }, [canvasRef, emojiCanvasWidth, emojiCanvasHeight])
 
   // // take new imageData and draw emojis
   useEffect(() => {
@@ -84,11 +83,11 @@ const EmojiVision = ({
       // in case canvas was mirrored, restore (so we can draw debug info correctly)
       ctx.restore()
     }
-  }, [facingMode, fontSize, imageData, mediaStatus, palette])
+  }, [canvasRef, facingMode, fontSize, imageData, mediaStatus, palette])
 
   // debug
   useEffect(() => {
-    if (debug && mediaStatus === userMediaStatus.READY) {
+    if (canvasRef.current && debug && mediaStatus === userMediaStatus.READY) {
       const ctx = canvasRef.current.getContext('2d')
 
       const drawStrokedText = (text, x, y) => {
@@ -102,7 +101,7 @@ const EmojiVision = ({
 
       const drawFilters = filters => {
         Object.keys(filters).forEach((filter, index) => {
-          drawStrokedText(`${filter}: ${filters[filter]}`, 20, 20 + (index * 25))
+          drawStrokedText(`${filter}: ${filters[filter]}`, 20, 100 + (index * 25))
         })
       }
 
@@ -120,11 +119,15 @@ const EmojiVision = ({
       const fps = fpsRef.current.toFixed(2)
       drawFilters({ fps, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
     }
-  }, [debug, imageData, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, filters, orientation, mediaStatus])
+  }, [canvasRef, debug, imageData, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, filters, orientation, mediaStatus])
 
-  // TODO: stylez
+
+  // TODO: fix max width on aspect ratio
   return (
-    <canvas ref={canvasRef} style={{ width: "100%" }} />
+    <canvas ref={canvasRef} style={{
+      width: "100%",
+      maxHeight: "100vh",
+    }} />
   )
 }
 

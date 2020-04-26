@@ -1,11 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
 import * as userMediaStatus from '../constants/userMedia'
 
-// takes in constraint options (requestedWidth, requestedHeight, and facingMode)
+// takes in constraint options (orientation and facingMode)
 // requests access to the user's webcam
 // returns the mediaStream (which can then be used as the srcObject for a video element)
 // also returns additional useful info, such as: 
-// - the actual width and height of the video stream
 // - the camera being used
 // - status info
 export const useUserMedia = (orientation, facingMode) => {
@@ -19,15 +18,7 @@ export const useUserMedia = (orientation, facingMode) => {
   // initialize
   useEffect(() => {
     (async () => {
-      // helper fn to get useful data (width, height, camera) from the video track
-      const getTrackData = stream => {
-        const videoTrack = stream.getVideoTracks()[0]
-        setActiveCamera(videoTrack.label)
-        setStatus(userMediaStatus.READY)
-      }
-
       setStatus(userMediaStatus.PENDING)
-
       // if the stream isn't set up or the camera switches, get a new mediaStream
       if (!mediaStream || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
         try {
@@ -40,10 +31,12 @@ export const useUserMedia = (orientation, facingMode) => {
           })
 
           // save stream and track data
+          const videoTrack = stream.getVideoTracks()[0]
           setMediaStream(stream)
-          getTrackData(stream)
+          setActiveCamera(videoTrack.label)
+          setStatus(userMediaStatus.READY)
 
-          // set prevFacingModeRef to let us check when the user switches modes
+          // set refs to let us check when the user switches modes
           prevFacingModeRef.current = facingMode
           prevOrientationRef.current = orientation
         } catch (err) {
@@ -52,19 +45,17 @@ export const useUserMedia = (orientation, facingMode) => {
         }
       }
     })()
-  }, [mediaStream, orientation, facingMode])
 
-  // cleanup mediaStream when it's no longer needed (stop the tracks)
-  useEffect(() => {
+    // cleanup mediaStream when it's no longer needed (stop the tracks)
     return () => {
-      setStatus(userMediaStatus.ENDED)
       if (mediaStream) {
         mediaStream.getVideoTracks().forEach(track => {
           track.stop()
         })
+        setStatus(userMediaStatus.ENDED)
       }
     }
-  }, [mediaStream])
+  }, [mediaStream, orientation, facingMode])
 
   return { mediaStream, status, activeCamera }
 }

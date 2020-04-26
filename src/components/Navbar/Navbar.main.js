@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { Header, Logo, Nav, Button } from './style'
 
 const Emoji = ({ character, title }) => (
@@ -6,14 +6,23 @@ const Emoji = ({ character, title }) => (
 )
 
 const Navbar = ({
+  canvasRef,
   activeModal, setActiveModal,
   facingMode, setFacingMode,
   debug, setDebug,
   videoDeviceCount
 }) => {
+  const logoRef = useRef()
+
+  const handleDownload = () => {
+    const link = logoRef.current
+    link.download = 'emojivision.png'
+    link.href = canvasRef.current.toDataURL()
+  }
+
   return (
     <Header>
-      <Logo>
+      <Logo onClick={handleDownload} ref={logoRef}>
         <Emoji title="Camera" character="📷" />
       </Logo>
       <Nav>

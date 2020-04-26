@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PaletteBuilder from './components/PaletteBuilder/index'
 import EmojiVision from './components/EmojiVision'
 import Controls from './components/Controls'
@@ -16,7 +16,7 @@ function App() {
   const { palette, paletteColors, status: paletteStatus } = usePaletteBuilder(emoji)
 
   // video settings
-  const [debug, setDebug] = useState(true)
+  const [debug, setDebug] = useState(false)
   const [fontSize, setFontSize] = useState(10)
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
@@ -29,18 +29,7 @@ function App() {
   // App UI state
   const [activeModal, setActiveModal] = useState("NONE")
 
-  // this needs work...
-  // useEffect(() => {
-  //   let width = 640
-  //   let height = 480
-  //   setConstraints({
-  //     video: {
-  //       width: { max: width / fontSize },
-  //       height: { max: height / fontSize },
-  //       facingMode
-  //     }
-  //   })
-  // }, [orientation, fontSize, facingMode])
+  const canvasRef = useRef()
 
 
   // Render helpers
@@ -63,6 +52,7 @@ function App() {
   return (
     <div className="App">
       <Navbar
+        canvasRef={canvasRef}
         activeModal={activeModal}
         setActiveModal={setActiveModal}
         facingMode={facingMode}
@@ -71,8 +61,9 @@ function App() {
         setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
-      <main style={{ position: "relative", minHeight: "80vh" }}>
+      <main style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
         {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
+          canvasRef={canvasRef}
           debug={debug}
           palette={palette}
           paletteColors={paletteColors}
@@ -80,10 +71,10 @@ function App() {
           filters={{ brightness, saturate, contrast }}
           facingMode={facingMode}
         />}
-        <Modal show={activeModal !== "NONE"}>
-          {getModalContents()}
-        </Modal>
       </main>
+      <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
+        {getModalContents()}
+      </Modal>
     </div>
   )
 }

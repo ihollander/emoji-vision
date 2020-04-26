@@ -5,15 +5,18 @@ export const Header = styled.header`
   justify-content: space-between;
   align-items: center;
   font-size: 2rem;
-  background-color: #333;
+  background-color: rgba(55, 55, 55, 0.8);
+  z-index: 1;
 `
 
 export const Nav = styled.nav`
   margin: 0.5rem 1rem;
 `
 
-export const Logo = styled.div`
+export const Logo = styled.a`
   margin: 0.5rem 1rem;
+  cursor: pointer;
+  text-decoration: none;
 `
 
 export const Button = styled.button`

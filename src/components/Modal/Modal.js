@@ -34,9 +34,16 @@ export const ModalInner = styled.div`
   }
 `
 
-const Modal = ({ show, children }) => {
+const Modal = ({ show, setActiveModal, children }) => {
+
+  const closeModal = e => {
+    if (e.target.classList.contains("open")) {
+      setActiveModal("NONE")
+    }
+  }
+
   return (
-    <StyledModal className={show && "open"}>
+    <StyledModal onClick={closeModal} className={show && "open"}>
       <ModalInner>
         {children}
       </ModalInner>
