@@ -17,7 +17,7 @@ function App() {
 
   // video settings
   const [debug, setDebug] = useState(false)
-  const [fontSize, setFontSize] = useState(10)
+  const [fontSize, setFontSize] = useState(8)
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
   const [brightness, setBrightness] = useState("1.0")
