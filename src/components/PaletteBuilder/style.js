@@ -6,6 +6,6 @@ export const Textarea = styled.textarea`
   resize: none;
   margin: 0 auto;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 6rem);
   background-color: beige;
 `

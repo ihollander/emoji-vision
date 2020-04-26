@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Emoji from '../Shared/Emoji'
 
 export const StyledModal = styled.div`
   position: absolute; 
@@ -19,14 +20,20 @@ export const StyledModal = styled.div`
 `
 
 export const ModalInner = styled.div`
-  width: 400px;
+  width: 600px;
+  max-width: 100vw;
   height: 100%;
   margin: 0 auto;
   background-color: rgba(0,0,0,0.5);
   padding: 2rem;
 
-  h1 {
-    text-decoration: underline;
+  button {
+    background-color: transparent;
+    border: none;
+    font: 2rem monospace;
+    cursor: pointer;
+    margin: 2rem 0;
+    float: right;
   }
 `
 
@@ -41,6 +48,9 @@ const Modal = ({ show, setActiveModal, children }) => {
   return (
     <StyledModal onClick={closeModal} className={show && "open"}>
       <ModalInner>
+        <button onClick={() => setActiveModal("NONE")}>
+          <Emoji emoji="🙅‍♀️" label="close" />
+        </button>
         {children}
       </ModalInner>
     </StyledModal>
