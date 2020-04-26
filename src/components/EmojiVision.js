@@ -8,14 +8,12 @@ const EmojiVision = ({
   paletteColors,
   fontSize,
   filters,
-  facingMode
+  facingMode,
+  debug
 }) => {
 
   const { orientation, screenWidth, screenHeight } = useDeviceDimensions()
   const deviceAspectRatio = screenWidth / screenHeight
-
-  const requestedWidth = Math.min(Math.floor(screenWidth / fontSize), 100)
-  const requestedHeight = requestedWidth / deviceAspectRatio
 
   const canvasRef = useRef()
 
@@ -23,26 +21,27 @@ const EmojiVision = ({
   const fpsRef = useRef()
   const lastCalledTimeRef = useRef()
 
-  const requestedAspectRatio = requestedWidth / requestedHeight
-  const { width, height, status: mediaStatus, mediaStream, activeCamera } = useUserMedia(requestedAspectRatio, requestedWidth, requestedHeight, facingMode)
+  const { status: mediaStatus, mediaStream, activeCamera } = useUserMedia(orientation, facingMode)
 
-  const videoAspectRatio = width / height
+  const { canvasWidth: pixelatedCanvasWidth, canvasHeight: pixelatedCanvasHeight, imageData } = usePixelatedVideo({ fontSize, mediaStream, paletteColors, filters })
 
-  const { imageData } = usePixelatedVideo({ mediaStream, width, height, paletteColors, filters })
+  const emojiCanvasWidth = pixelatedCanvasWidth * fontSize
+  const emojiCanvasHeight = pixelatedCanvasHeight * fontSize
 
   // setup canvas
   useEffect(() => {
-    if (width && height) {
-      canvasRef.current.width = width * fontSize
-      canvasRef.current.height = height * fontSize
+    if (emojiCanvasWidth && emojiCanvasHeight) {
+      canvasRef.current.width = emojiCanvasWidth
+      canvasRef.current.height = emojiCanvasHeight
     }
-  }, [width, height, fontSize])
+  }, [emojiCanvasWidth, emojiCanvasHeight, fontSize])
 
-  // take new imageData and draw emojis
+  // // take new imageData and draw emojis
   useEffect(() => {
     if (canvasRef.current && imageData && mediaStatus === userMediaStatus.READY) {
       // setup context
       const ctx = canvasRef.current.getContext('2d')
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
       ctx.font = `${fontSize}px sans-serif`
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
@@ -54,12 +53,12 @@ const EmojiVision = ({
         ctx.scale(-1, 1)
       }
 
+      // position data
+      let nextX = 0
+      let nextY = 0
+
       // iterate thru pixelData
       for (let i = 0; i < imageData.length; i += 4) {
-        // use compressed canvas aspect ratio to get 2D coordinates from 1D pixel array
-        const y = Math.floor((i / 4) / width) * fontSize
-        const x = ((i / 4) % width) * fontSize
-
         // read RGB pixels from imageData
         const r = imageData[i]
         const g = imageData[i + 1]
@@ -69,18 +68,27 @@ const EmojiVision = ({
         const emoji = palette[colorToNumber(r, g, b)]
 
         // draw the emoji
-        ctx.fillText(emoji, x, y)
+        ctx.fillText(emoji, nextX, nextY)
+
+        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
+        // ctx.fillRect(nextX, nextY, 16, 16)
+
+        // offset next position
+        nextX += fontSize
+        if (nextX >= ctx.canvas.width) {
+          nextY += fontSize
+          nextX = 0
+        }
       }
 
       // in case canvas was mirrored, restore (so we can draw debug info correctly)
       ctx.restore()
     }
-  }, [facingMode, fontSize, imageData, palette, width, mediaStatus])
+  }, [facingMode, fontSize, imageData, mediaStatus, palette])
 
-  // debug / FPS
-  // TODO: make toggleable (debug state)
+  // debug
   useEffect(() => {
-    if (mediaStatus === userMediaStatus.READY) {
+    if (debug && mediaStatus === userMediaStatus.READY) {
       const ctx = canvasRef.current.getContext('2d')
 
       const drawStrokedText = (text, x, y) => {
@@ -110,9 +118,9 @@ const EmojiVision = ({
 
       const { contrast, brightness, saturate } = filters
       const fps = fpsRef.current.toFixed(2)
-      drawFilters({ fps, screenWidth, screenHeight, width, height, deviceAspectRatio, requestedAspectRatio, videoAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
+      drawFilters({ fps, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
     }
-  }, [imageData, screenWidth, screenHeight, width, height, deviceAspectRatio, requestedAspectRatio, videoAspectRatio, activeCamera, facingMode, filters, orientation, mediaStatus])
+  }, [debug, imageData, screenWidth, screenHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, filters, orientation, mediaStatus])
 
   // TODO: stylez
   return (

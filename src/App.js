@@ -16,6 +16,7 @@ function App() {
   const { palette, paletteColors, status: paletteStatus } = usePaletteBuilder(emoji)
 
   // video settings
+  const [debug, setDebug] = useState(true)
   const [fontSize, setFontSize] = useState(10)
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
@@ -66,10 +67,13 @@ function App() {
         setActiveModal={setActiveModal}
         facingMode={facingMode}
         setFacingMode={setFacingMode}
+        debug={debug}
+        setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
       <main style={{ position: "relative", minHeight: "80vh" }}>
         {paletteStatus === paletteBuilderStatus.READY && <EmojiVision
+          debug={debug}
           palette={palette}
           paletteColors={paletteColors}
           fontSize={fontSize}

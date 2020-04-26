@@ -5,9 +5,17 @@ import RgbQuant from 'rgbquant'
 // also need to figure out how to abort worker in cleanup
 
 
-export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, filters }) => {
+export const usePixelatedVideo = ({ fontSize, mediaStream, paletteColors, filters }) => {
   // imageData is the array of normalized pixels that will be returned
   const [imageData, setImageData] = useState(null)
+
+  // video width/height come from the video element (video.videoWidth .videoHeight)
+  const [videoWidth, setVideoWidth] = useState(0)
+  const [videoHeight, setVideoHeight] = useState(0)
+
+  // canvas width/height are calculated from videoWidth/videoHeight and fontSize (dupe state?)
+  const [canvasWidth, setCanvasWidth] = useState(0)
+  const [canvasHeight, setCanvasHeight] = useState(0)
 
   // video element will receive mediaStream as srcObject
   const videoRef = useRef(document.createElement("video"))
@@ -22,8 +30,6 @@ export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, f
     // render helper
     const render = () => {
       if (videoRef.current.readyState === 4) {
-        const { width, height } = canvasRef.current
-
         // apply filters
         const filterString = Object.keys(filters).map(filter => {
           return `${filter}(${filters[filter] || 1.0})`
@@ -31,9 +37,9 @@ export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, f
         ctx.filter = filterString
 
         // draw video
-        ctx.drawImage(videoRef.current, 0, 0, width, height)
+        ctx.drawImage(videoRef.current, 0, 0, canvasWidth, canvasHeight)
 
-        let pixelData = ctx.getImageData(0, 0, width, height).data
+        let pixelData = ctx.getImageData(0, 0, canvasWidth, canvasHeight).data
 
         const quant = new RgbQuant({
           palette: paletteColors,
@@ -49,9 +55,7 @@ export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, f
       rafId = requestAnimationFrame(render)
     }
 
-    if (height > 0 && width > 0) {
-      canvasRef.current.height = height
-      canvasRef.current.width = width
+    if (canvasWidth > 0 && canvasHeight > 0) {
       rafId = requestAnimationFrame(render)
     }
 
@@ -59,7 +63,17 @@ export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, f
       // cancel animation and stop loop during cleanup
       cancelAnimationFrame(rafId)
     }
-  }, [width, height, filters, paletteColors])
+  }, [canvasWidth, canvasHeight, fontSize, filters, paletteColors])
+
+  // setup canvas width/height from changes to video width/height + font size
+  useEffect(() => {
+    if (videoWidth > 0 && videoHeight > 0) {
+      canvasRef.current.width = videoWidth / fontSize
+      canvasRef.current.height = videoHeight / fontSize
+      setCanvasWidth(videoWidth / fontSize)
+      setCanvasHeight(videoHeight / fontSize)
+    }
+  }, [fontSize, videoHeight, videoWidth])
 
   // setup video element
   useEffect(() => {
@@ -68,8 +82,13 @@ export const usePixelatedVideo = ({ mediaStream, width, height, paletteColors, f
     if (mediaStream && video.srcObject !== mediaStream) {
       video.srcObject = mediaStream
       video.autoplay = true
+
+      video.onloadeddata = () => {
+        setVideoWidth(video.videoWidth)
+        setVideoHeight(video.videoHeight)
+      }
     }
   }, [mediaStream])
 
-  return { imageData, width, height }
+  return { imageData, canvasWidth, canvasHeight }
 }

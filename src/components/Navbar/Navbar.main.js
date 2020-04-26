@@ -8,6 +8,7 @@ const Emoji = ({ character, title }) => (
 const Navbar = ({
   activeModal, setActiveModal,
   facingMode, setFacingMode,
+  debug, setDebug,
   videoDeviceCount
 }) => {
   return (
@@ -16,15 +17,18 @@ const Navbar = ({
         <Emoji title="Camera" character="📷" />
       </Logo>
       <Nav>
+        {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>
+          <Emoji title="Reverse" character={facingMode === "user" ? "🙃" : "🙂"} />
+        </Button>}
         <Button onClick={() => setActiveModal(activeModal === "PALETTE" ? "NONE" : "PALETTE")}>
           <Emoji title="Palette" character="🎨" />
         </Button>
         <Button onClick={() => setActiveModal(activeModal === "CONTROLS" ? "NONE" : "CONTROLS")}>
           <Emoji title="Wrench" character="🔧" />
         </Button>
-        {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>
-          <Emoji title="Reverse" character={facingMode === "user" ? "🙃" : "🙂"} />
-        </Button>}
+        <Button onClick={() => setDebug(!debug)}>
+          <Emoji title="Palette" character={debug ? "🦋" : "🐛"} />
+        </Button>
       </Nav>
     </Header>
   )
