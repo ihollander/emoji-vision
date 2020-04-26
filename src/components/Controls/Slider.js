@@ -32,19 +32,28 @@ const Slider = ({
     onChange(newValue)
   }
 
-  const handleMouseUp = ({ clientX }) => {
-    handleMouseMove({ clientX })
+  const handleTouchMove = ({ touches }) => {
+    handleMouseMove({ clientX: touches[0].clientX })
+  }
+
+  const handleMouseUp = () => {
     document.removeEventListener('mouseup', handleMouseUp)
-    document.removeEventListener('touchmove', handleMouseUp)
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('touchend', handleMouseMove)
+    document.removeEventListener('touchmove', handleTouchMove)
+    document.removeEventListener('mousemove', handleMouseUp)
+    document.removeEventListener('touchend', handleMouseUp)
   }
 
   const handleMouseDown = ({ clientX }) => {
     diff.current = clientX - thumbRef.current.getBoundingClientRect().left
     document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('touchmove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
+  }
+
+  const handleTouchStart = ({ touches }) => {
+    const { clientX } = touches[0]
+    diff.current = clientX - thumbRef.current.getBoundingClientRect().left
+
+    document.addEventListener('touchmove', handleTouchMove)
     document.addEventListener('touchend', handleMouseUp)
   }
 
@@ -59,7 +68,7 @@ const Slider = ({
         }}
       />
       <RangeThumb ref={thumbRef}
-        onTouchStart={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onMouseDown={handleMouseDown}
         style={{
           left: `calc(${percentage}% - 5px)`
