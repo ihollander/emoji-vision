@@ -66,14 +66,16 @@ const EmojiVision = ({
         const g = imageData[i + 1]
         const b = imageData[i + 2]
 
+        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
+        // ctx.fillRect(nextX, nextY, 16, 16)
+
         // find the emoji
         const emoji = palette[colorToNumber(r, g, b)]
 
         // draw the emoji
         ctx.fillText(emoji, nextX, nextY)
 
-        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
-        // ctx.fillRect(nextX, nextY, 16, 16)
+
 
         // offset next position
         nextX += fontSize * 2

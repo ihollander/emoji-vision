@@ -4,7 +4,7 @@ import EmojiVision from './components/EmojiVision/EmojiVision.main'
 import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
-import { useMediaDeviceInfo, usePaletteBuilder } from './hooks';
+import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage, useEmojiFavicon } from './hooks';
 import * as paletteBuilderStatus from './constants/paletteBuilder'
 
 import emoji from './emoji.json'
@@ -12,7 +12,7 @@ const lessEmoji = emoji.slice(0, 500).join("")
 
 function App() {
   // emoji array used to build palette
-  const [emoji, setEmoji] = useState(lessEmoji)
+  const [emoji, setEmoji] = useLocalStorage('emojiList', lessEmoji)
   const { palette, paletteColors, status: paletteStatus } = usePaletteBuilder(emoji)
 
   // video settings
@@ -29,8 +29,11 @@ function App() {
   // App UI state
   const [activeModal, setActiveModal] = useState("NONE")
 
+  // canvas for EmojiVision + image downloader in NavBar
   const canvasRef = useRef()
 
+  // favicon for funsiez
+  useEmojiFavicon("📸")
 
   // Render helpers
   const getModalContents = () => {

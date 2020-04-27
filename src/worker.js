@@ -21,8 +21,8 @@ export const buildPalette = emojiArray => {
   const ctx = canvas.getContext('2d')
 
   ctx.font = "16px monospace"
-  ctx.textAlign = "center"
-  ctx.textBaseline = "middle"
+  ctx.textAlign = "top"
+  ctx.textBaseline = "left"
 
   emojiArray.forEach(emoji => {
     ctx.clearRect(0, 0, 16, 16)
