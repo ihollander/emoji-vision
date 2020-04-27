@@ -27,14 +27,14 @@ const EmojiVision = ({
 
   const { canvasWidth: pixelatedCanvasWidth, canvasHeight: pixelatedCanvasHeight, imageData } = usePixelatedVideo({ fontSize, mediaStream, paletteColors, brightness, saturate, contrast })
 
-  const emojiCanvasWidth = pixelatedCanvasWidth * fontSize
-  const emojiCanvasHeight = pixelatedCanvasHeight * fontSize
+  const emojiCanvasWidth = pixelatedCanvasWidth * fontSize * 2
+  const emojiCanvasHeight = pixelatedCanvasHeight * fontSize * 2
 
   // setup canvas
   useEffect(() => {
     if (canvasRef.current && emojiCanvasWidth && emojiCanvasHeight) {
-      canvasRef.current.width = emojiCanvasWidth * 2
-      canvasRef.current.height = emojiCanvasHeight * 2
+      canvasRef.current.width = emojiCanvasWidth
+      canvasRef.current.height = emojiCanvasHeight
     }
   }, [canvasRef, emojiCanvasWidth, emojiCanvasHeight])
 
@@ -123,7 +123,7 @@ const EmojiVision = ({
       const fps = fpsRef.current.toFixed(2)
       drawFilters({ fps, screenWidth, screenHeight, pixelatedCanvasWidth, pixelatedCanvasHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
     }
-  }, [canvasRef, debug, imageData, screenWidth, screenHeight, pixelatedCanvasWidth, pixelatedCanvasHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, activeCamera, facingMode, contrast, brightness, saturate, orientation, mediaStatus])
+  }, [imageData, activeCamera, brightness, canvasRef, contrast, debug, deviceAspectRatio, emojiCanvasHeight, emojiCanvasWidth, facingMode, mediaStatus, orientation, pixelatedCanvasHeight, pixelatedCanvasWidth, saturate, screenHeight, screenWidth])
 
   return (
     <CanvasContainer>

@@ -22,11 +22,12 @@ export const useUserMedia = (orientation, facingMode) => {
       // if the stream isn't set up or the camera switches, get a new mediaStream
       if (!mediaStream || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
         try {
-          // for some reason, "environment" doesn't work (Pixel 4); need to use { exact: "enviroment" }
-          const mode = facingMode === "user" ? "user" : { exact: "environment" }
+          // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "enviroment" } or { exact: "enviroment" }
+          const mode = facingMode === "user" ? "user" : { ideal: "environment" }
 
           // get the stream
           const stream = await navigator.mediaDevices.getUserMedia({
+            frameRate: 30,
             video: { facingMode: mode }
           })
 

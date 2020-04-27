@@ -46,7 +46,7 @@ export const ButtonSelector = styled.div`
     cursor: pointer;
   }
 
-  span::selection { 
-    background: none; 
+  .selected span {
+    text-shadow: 0px 0px 10px white;
   }
 `

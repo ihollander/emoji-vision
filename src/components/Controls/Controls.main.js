@@ -4,7 +4,7 @@ import { InputContainer, ButtonSelector } from './style'
 import Emoji from '../Shared/Emoji'
 
 const SizeSelector = ({ emoji, label, size, selected, onClick }) => (
-  <div onClick={onClick} style={{ fontSize: `${size * 3}px` }}>
+  <div className={selected ? "selected" : undefined} onClick={onClick} style={{ fontSize: `${size * 3}px` }}>
     <Emoji emoji={emoji} label={label} />
   </div>
 )

@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import Emoji from '../Shared/Emoji'
 import { Header, Logo, Nav, Button } from './style'
 import { useEmojiFavicon } from '../../hooks'
+import * as modalConsts from '../../constants/modal'
 
 const Navbar = ({
   canvasRef,
@@ -37,10 +38,10 @@ const Navbar = ({
         {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>
           <Emoji label="Reverse" emoji={facingMode === "user" ? "🙃" : "🙂"} />
         </Button>}
-        <Button onClick={() => setActiveModal(activeModal === "PALETTE" ? "NONE" : "PALETTE")}>
+        <Button onClick={() => setActiveModal(activeModal === modalConsts.PALETTE ? modalConsts.NONE : modalConsts.PALETTE)}>
           <Emoji label="Palette" emoji="🎨" />
         </Button>
-        <Button onClick={() => setActiveModal(activeModal === "CONTROLS" ? "NONE" : "CONTROLS")}>
+        <Button onClick={() => setActiveModal(activeModal === modalConsts.CONTROLS ? modalConsts.NONE : modalConsts.CONTROLS)}>
           <Emoji label="Wrench" emoji="🔧" />
         </Button>
         <Button onClick={() => setDebug(!debug)}>

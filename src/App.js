@@ -75,7 +75,7 @@ function App() {
           facingMode={facingMode}
         />}
       </main>
-      <Modal setActiveModal={setActiveModal} show={activeModal !== "NONE"}>
+      <Modal setActiveModal={setActiveModal} show={activeModal !== modalConsts.NONE}>
         {getModalContents()}
       </Modal>
     </>
