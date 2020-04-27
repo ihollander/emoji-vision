@@ -62,7 +62,7 @@ function App() {
         setDebug={setDebug}
         videoDeviceCount={videoDevices.length}
       />
-      <main style={{ position: "relative", margin: "2rem 0" }}>
+      <main style={{ display: "flex", height: "94vh", alignItems: "center" }}>
         {paletteStatus === paletteBuilderConsts.READY && <EmojiVision
           canvasRef={canvasRef}
           debug={debug}

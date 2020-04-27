@@ -48,15 +48,11 @@ const EmojiVision = ({
       ctx.textAlign = "left"
       ctx.textBaseline = "top"
 
-      // mirror if the camera is facing user
-      ctx.save()
-      if (facingMode === "user") {
-        ctx.translate(ctx.canvas.width, 0)
-        ctx.scale(-1, 1)
-      }
-
       // position data
-      let nextX = 0
+      const offset = fontSize * 2
+      const offsetX = facingMode === "user" ? -offset : offset
+      const startX = facingMode === "user" ? ctx.canvas.width - offset : 0
+      let nextX = startX
       let nextY = 0
 
       // iterate thru pixelData
@@ -75,18 +71,13 @@ const EmojiVision = ({
         // draw the emoji
         ctx.fillText(emoji, nextX, nextY)
 
-
-
         // offset next position
-        nextX += fontSize * 2
-        if (nextX >= ctx.canvas.width) {
-          nextY += fontSize * 2
-          nextX = 0
+        nextX += offsetX
+        if (nextX < 0 || nextX >= ctx.canvas.width) {
+          nextY += offset
+          nextX = startX
         }
       }
-
-      // in case canvas was mirrored, restore (so we can draw debug info correctly)
-      ctx.restore()
     }
   }, [canvasRef, facingMode, fontSize, imageData, mediaStatus, palette])
 
