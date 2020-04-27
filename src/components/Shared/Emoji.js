@@ -1,7 +1,8 @@
 import React from 'react'
+import { StyledEmoji } from './style'
 
 const Emoji = ({ emoji, label }) => (
-  <span role="img" aria-label={label}>{emoji}</span>
+  <StyledEmoji role="img" aria-label={label}>{emoji}</StyledEmoji>
 )
 
 export default Emoji

@@ -7,7 +7,7 @@ export const useDeviceDimensions = () => {
   const [screenHeight, setScreenHeight] = useState(0)
 
   useEffect(() => {
-    const getOrientation = () => {
+    const onDeviceOrientation = () => {
       const orientation = (window.screen.orientation || {}).type || window.screen.mozOrientation || window.screen.msOrientation
       setScreenWidth(window.screen.width)
       setScreenHeight(window.screen.height)
@@ -18,17 +18,17 @@ export const useDeviceDimensions = () => {
       }
     }
 
-    window.addEventListener("deviceorientation", getOrientation)
+    window.addEventListener("deviceorientation", onDeviceOrientation)
 
     navigator.mediaDevices.enumerateDevices()
       .then(devices => {
         const videoDevices = devices.filter(device => device.kind === "videoinput")
         setVideoDevices(videoDevices)
-        getOrientation()
+        onDeviceOrientation()
       })
 
     return () => {
-      window.removeEventListener("deviceorientation", getOrientation)
+      window.removeEventListener("deviceorientation", onDeviceOrientation)
     }
   }, [])
 

@@ -96,7 +96,7 @@ const EmojiVision = ({
       const ctx = canvasRef.current.getContext('2d')
 
       const drawStrokedText = (text, x, y) => {
-        ctx.font = `bold 24px sans-serif`
+        ctx.font = `bold 48px sans-serif`
         ctx.textAlign = "left"
         ctx.fillStyle = `rgb(255,0,0)`
         ctx.fillText(text, x, y)
@@ -106,7 +106,7 @@ const EmojiVision = ({
 
       const drawFilters = filters => {
         Object.keys(filters).forEach((filter, index) => {
-          drawStrokedText(`${filter}: ${filters[filter]}`, 20, 100 + (index * 25))
+          drawStrokedText(`${filter}: ${filters[filter]}`, 20, 100 + (index * 50))
         })
       }
 

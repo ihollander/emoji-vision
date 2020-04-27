@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import Emoji from '../Shared/Emoji'
 import { Header, Logo, Nav, Button } from './style'
+import { useEmojiFavicon } from '../../hooks'
 
 const Navbar = ({
   canvasRef,
@@ -9,18 +10,28 @@ const Navbar = ({
   debug, setDebug,
   videoDeviceCount
 }) => {
+  // favicon for funsiez
+  const [logo, setLogo] = useEmojiFavicon("📷")
   const logoRef = useRef()
 
-  const handleDownload = () => {
+  const handleClick = () => {
     const link = logoRef.current
     link.download = 'emojivision.png'
     link.href = canvasRef.current.toDataURL()
+    setLogo("📷")
   }
 
   return (
     <Header>
-      <Logo onClick={handleDownload} ref={logoRef}>
-        <Emoji label="Camera" emoji="📷" />
+      <Logo
+        ref={logoRef}
+        onClick={handleClick}
+        onTouchStart={() => setLogo("📸")}
+        onMouseDown={() => setLogo("📸")}
+        onTouchEnd={handleClick}
+        onMouseUp={handleClick}
+      >
+        <Emoji label="Camera" emoji={logo} />
       </Logo>
       <Nav>
         {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>

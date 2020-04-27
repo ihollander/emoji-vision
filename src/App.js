@@ -4,7 +4,7 @@ import EmojiVision from './components/EmojiVision/EmojiVision.main'
 import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
-import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage, useEmojiFavicon } from './hooks';
+import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage } from './hooks';
 import * as paletteBuilderStatus from './constants/paletteBuilder'
 
 import emoji from './emoji.json'
@@ -31,9 +31,6 @@ function App() {
 
   // canvas for EmojiVision + image downloader in NavBar
   const canvasRef = useRef()
-
-  // favicon for funsiez
-  useEmojiFavicon("📸")
 
   // Render helpers
   const getModalContents = () => {

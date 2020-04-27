@@ -39,7 +39,7 @@ const Slider = ({
   const handleMouseUp = () => {
     document.removeEventListener('mouseup', handleMouseUp)
     document.removeEventListener('touchmove', handleTouchMove)
-    document.removeEventListener('mousemove', handleMouseUp)
+    document.removeEventListener('mousemove', handleMouseMove)
     document.removeEventListener('touchend', handleMouseUp)
   }
 
@@ -64,14 +64,14 @@ const Slider = ({
       <RangeBackground
         style={{
           background: `hsl(0, 0%, ${percentage}%)`,
-          width: `calc(${percentage}% + 1rem)`
+          width: `${percentage}%`
         }}
       />
       <RangeThumb ref={thumbRef}
         onTouchStart={handleTouchStart}
         onMouseDown={handleMouseDown}
         style={{
-          left: `calc(${percentage}% - 5px)`
+          left: `calc(${percentage}% - 1rem)`
         }}
       >
         <Emoji emoji={emoji} label={label} />

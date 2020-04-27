@@ -20,15 +20,15 @@ export const buildPalette = emojiArray => {
   const canvas = new OffscreenCanvas(16, 16)
   const ctx = canvas.getContext('2d')
 
-  ctx.font = "16px monospace"
-  ctx.textAlign = "top"
-  ctx.textBaseline = "left"
+  ctx.font = "15px monospace"
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
 
   emojiArray.forEach(emoji => {
     ctx.clearRect(0, 0, 16, 16)
 
     // draw emoji
-    ctx.fillText(emoji, 0, 0)
+    ctx.fillText(emoji, 8, 10)
 
     const { data } = ctx.getImageData(0, 0, 16, 16)
 

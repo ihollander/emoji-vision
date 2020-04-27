@@ -40,7 +40,7 @@ export const ButtonSelector = styled.div`
   justify-content: space-evenly;
   align-items: center;
   border-radius: 5px;
-  background-color: hsl(0, 0%, 50%);
+  background: #ddd;
 
   > div {
     cursor: pointer;

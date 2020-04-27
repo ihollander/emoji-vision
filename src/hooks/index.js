@@ -5,6 +5,7 @@ import { useDeviceDimensions } from './useDeviceDimensions'
 import { usePaletteBuilder } from './usePaletteBuilder'
 import { useLocalStorage } from './useLocalStorage'
 import { useEmojiFavicon } from './useEmojiFavicon'
+import { usePageVisibility } from './usePageVisibility'
 
 export {
   usePixelatedVideo,
@@ -13,5 +14,6 @@ export {
   useDeviceDimensions,
   usePaletteBuilder,
   useLocalStorage,
-  useEmojiFavicon
+  useEmojiFavicon,
+  usePageVisibility
 }
