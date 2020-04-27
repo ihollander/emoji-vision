@@ -1,7 +1,7 @@
 import React from 'react'
-import Emoji from '../Shared/Emoji'
+import { Emoji, Button } from '../Shared'
 import * as modalConsts from '../../constants/modal'
-import { StyledModal, ModalInner } from './style'
+import { StyledModal, ModalInner, ModalActions } from './style'
 
 const Modal = ({ show, setActiveModal, children }) => {
 
@@ -14,9 +14,11 @@ const Modal = ({ show, setActiveModal, children }) => {
   return (
     <StyledModal onClick={closeModal} className={show && "open"}>
       <ModalInner>
-        <button onClick={() => setActiveModal(modalConsts.NONE)}>
-          <Emoji emoji="🙅‍♀️" label="close" />
-        </button>
+        <ModalActions>
+          <Button onClick={() => setActiveModal(modalConsts.NONE)}>
+            <Emoji emoji="🙅‍♀️" label="close" />
+          </Button>
+        </ModalActions>
         {children}
       </ModalInner>
     </StyledModal>

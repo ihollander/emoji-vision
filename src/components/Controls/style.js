@@ -21,6 +21,7 @@ export const Range = styled.div`
 export const RangeBackground = styled.div` 
   position: relative;
   height: 100%;
+  border-radius: 5px;
 `
 
 export const RangeThumb = styled.div`
@@ -40,7 +41,6 @@ export const ButtonSelector = styled.div`
   justify-content: space-evenly;
   align-items: center;
   border-radius: 5px;
-  background: #ddd;
 
   > div {
     cursor: pointer;

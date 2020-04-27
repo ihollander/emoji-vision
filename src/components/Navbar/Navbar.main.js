@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
-import Emoji from '../Shared/Emoji'
-import { Header, Logo, Nav, Button } from './style'
+import { Emoji, Button } from '../Shared'
+import { Header, Logo, Nav } from './style'
 import { useEmojiFavicon } from '../../hooks'
 import * as modalConsts from '../../constants/modal'
 
@@ -32,7 +32,9 @@ const Navbar = ({
         onTouchEnd={handleClick}
         onMouseUp={handleClick}
       >
-        <Emoji label="Camera" emoji={logo} />
+        <Button>
+          <Emoji label="Camera" emoji={logo} />
+        </Button>
       </Logo>
       <Nav>
         {videoDeviceCount > 1 && <Button onClick={() => setFacingMode(facingMode === "user" ? "enviromnent" : "user")}>

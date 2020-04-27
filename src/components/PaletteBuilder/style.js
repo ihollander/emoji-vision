@@ -7,5 +7,5 @@ export const Textarea = styled.textarea`
   margin: 0 auto;
   width: 100%;
   height: calc(100% - 6rem);
-  background-color: beige;
+  background-color: #FFF8E7;
 `

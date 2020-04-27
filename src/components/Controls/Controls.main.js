@@ -1,12 +1,12 @@
 import React from 'react'
 import Slider from './Slider'
 import { InputContainer, ButtonSelector } from './style'
-import Emoji from '../Shared/Emoji'
+import { Emoji, Button } from '../Shared'
 
 const SizeSelector = ({ emoji, label, size, selected, onClick }) => (
-  <div className={selected ? "selected" : undefined} onClick={onClick} style={{ fontSize: `${size * 3}px` }}>
+  <Button className={selected ? "selected" : undefined} onClick={onClick} style={{ fontSize: `${size * 3}px` }}>
     <Emoji emoji={emoji} label={label} />
-  </div>
+  </Button>
 )
 
 const sizes = [4, 8, 10, 16]
@@ -19,11 +19,6 @@ const Controls = ({
 }) => {
   return (
     <>
-      <InputContainer>
-        <ButtonSelector>
-          {sizes.map(size => <SizeSelector key={size} emoji="😀" label="Size" selected={fontSize === size} size={size} onClick={() => setFontSize(size)} />)}
-        </ButtonSelector>
-      </InputContainer>
       <InputContainer>
         <Slider
           emoji="💡"
@@ -53,6 +48,11 @@ const Controls = ({
           min={0.0}
           max={2.0}
         />
+      </InputContainer>
+      <InputContainer>
+        <ButtonSelector>
+          {sizes.map(size => <SizeSelector key={size} emoji="😀" label="Size" selected={fontSize === size} size={size} onClick={() => setFontSize(size)} />)}
+        </ButtonSelector>
       </InputContainer>
     </>
   )
