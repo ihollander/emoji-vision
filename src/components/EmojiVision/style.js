@@ -9,4 +9,10 @@ export const CanvasContainer = styled.div`
     max-height: calc(100vh - 6rem);
     background-color: #FFF8E7;
   }
+
+  @media screen and (min-width: 1080px) {
+    canvas {
+      box-shadow: 4px 4px 10px #000;
+    }
+  }
 `

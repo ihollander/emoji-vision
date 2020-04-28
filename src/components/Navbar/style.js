@@ -6,7 +6,7 @@ export const Header = styled.header`
   align-items: center;
   background-color: rgb(255, 181, 0);
   z-index: 1;
-  box-shadow: 0px 2px 4px #333;
+      box-shadow: 4px 4px 10px #000;
   height: 8vh;
 `
 

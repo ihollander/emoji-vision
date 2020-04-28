@@ -34,3 +34,15 @@ html {
     font-size: 14px;
   }
 }
+
+@media only screen and (max-device-width: 400px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-device-width: 380px) {
+  html {
+    font-size: 10px;
+  }
+}
