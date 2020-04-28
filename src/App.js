@@ -1,4 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import ReactGA from 'react-ga';
+
 import PaletteBuilder from './components/PaletteBuilder/index'
 import EmojiVision from './components/EmojiVision/EmojiVision.main'
 import Controls from './components/Controls'
@@ -32,6 +34,10 @@ function App() {
 
   // canvas for EmojiVision + image downloader in NavBar
   const canvasRef = useRef()
+
+  useEffect(() => {
+    ReactGA.initialize('UA-164891713-1');
+  }, [])
 
   // Render helpers
   const getModalContents = () => {
