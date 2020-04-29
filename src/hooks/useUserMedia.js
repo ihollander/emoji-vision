@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import * as userMediaStatus from '../constants/userMedia'
+import { usePageVisibility } from '.'
 
 // takes in constraint options (orientation and facingMode)
 // requests access to the user's webcam
@@ -7,7 +8,7 @@ import * as userMediaStatus from '../constants/userMedia'
 // also returns additional useful info, such as: 
 // - the camera being used
 // - status info
-export const useUserMedia = (orientation, facingMode) => {
+export const useUserMedia = ({ orientation, facingMode }) => {
   const [mediaStream, setMediaStream] = useState(null)
   const [activeCamera, setActiveCamera] = useState(null)
   const [status, setStatus] = useState(userMediaStatus.PENDING)
@@ -15,37 +16,49 @@ export const useUserMedia = (orientation, facingMode) => {
   const prevFacingModeRef = useRef()
   const prevOrientationRef = useRef()
 
+  const isPageVisible = usePageVisibility()
+
   // initialize
   useEffect(() => {
-    (async () => {
-      setStatus(userMediaStatus.PENDING)
-      // if the stream isn't set up or the camera switches, get a new mediaStream
-      if (!mediaStream || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
-        try {
-          // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "enviroment" } or { exact: "enviroment" }
-          const mode = facingMode === "user" ? "user" : { ideal: "environment" }
+    if (isPageVisible) {
+      (async () => {
+        setStatus(userMediaStatus.PENDING)
+        // if the stream isn't set up or the camera switches, get a new mediaStream
+        if (!mediaStream || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
+          try {
+            // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "enviroment" } or { exact: "enviroment" }
+            const mode = facingMode === "user" ? "user" : { ideal: "environment" }
 
-          // get the stream
-          const stream = await navigator.mediaDevices.getUserMedia({
-            frameRate: 30,
-            video: { facingMode: mode }
-          })
+            // get the stream
+            const stream = await navigator.mediaDevices.getUserMedia({
+              frameRate: 30,
+              video: { facingMode: mode }
+            })
 
-          // save stream and track data
-          const videoTrack = stream.getVideoTracks()[0]
-          setMediaStream(stream)
-          setActiveCamera(videoTrack.label)
-          setStatus(userMediaStatus.READY)
+            // save stream and track data
+            const videoTrack = stream.getVideoTracks()[0]
+            setMediaStream(stream)
+            setActiveCamera(videoTrack.label)
+            setStatus(userMediaStatus.READY)
 
-          // set refs to let us check when the user switches modes
-          prevFacingModeRef.current = facingMode
-          prevOrientationRef.current = orientation
-        } catch (err) {
-          setStatus(userMediaStatus.ERROR)
-          // console.error(err)
+            // set refs to let us check when the user switches modes
+            prevFacingModeRef.current = facingMode
+            prevOrientationRef.current = orientation
+          } catch (err) {
+            setStatus(userMediaStatus.ERROR)
+            // console.error(err)
+          }
         }
+      })()
+    } else {
+      if (mediaStream) {
+        mediaStream.getVideoTracks().forEach(track => {
+          track.stop()
+        })
+        setMediaStream(null)
+        setStatus(userMediaStatus.ENDED)
       }
-    })()
+    }
 
     // cleanup mediaStream when it's no longer needed (stop the tracks)
     return () => {
@@ -56,7 +69,7 @@ export const useUserMedia = (orientation, facingMode) => {
         setStatus(userMediaStatus.ENDED)
       }
     }
-  }, [mediaStream, orientation, facingMode])
+  }, [mediaStream, orientation, facingMode, isPageVisible])
 
   return { mediaStream, status, activeCamera }
 }

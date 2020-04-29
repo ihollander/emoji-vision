@@ -23,7 +23,7 @@ const EmojiVision = ({
   const fpsRef = useRef()
   const lastCalledTimeRef = useRef()
 
-  const { status: mediaStatus, mediaStream, activeCamera } = useUserMedia(orientation, facingMode)
+  const { status: mediaStatus, mediaStream, activeCamera } = useUserMedia({ orientation, facingMode })
 
   const { canvasWidth: pixelatedCanvasWidth, canvasHeight: pixelatedCanvasHeight, imageData } = usePixelatedVideo({ fontSize, mediaStream, paletteColors, brightness, saturate, contrast })
 

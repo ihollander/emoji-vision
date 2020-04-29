@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import RgbQuant from 'rgbquant'
-import { usePageVisibility } from '.'
+
 // TODO: offload color normalization to worker thread?
 // this gives faster FPS but laggier video than doing work on main thread
 // also need to figure out how to abort worker in cleanup
@@ -32,8 +32,6 @@ export const usePixelatedVideo = ({
   // rafId keeps track of requestAnimationFrame id
   const rafIdRef = useRef()
 
-  const isPageVisible = usePageVisibility()
-
   useEffect(() => {
     const ctx = canvasRef.current.getContext('2d')
 
@@ -42,8 +40,8 @@ export const usePixelatedVideo = ({
       // setup next loop
       rafIdRef.current = requestAnimationFrame(render)
 
-      // if video is ready
-      if (videoRef.current.readyState === 4 && isPageVisible) {
+      // if video is ready and palette is ready
+      if (videoRef.current.readyState === 4 && paletteColors.length) {
         // apply filters
         const filters = { brightness, saturate, contrast }
         const filterString = Object.keys(filters).map(filter => {
@@ -75,7 +73,7 @@ export const usePixelatedVideo = ({
       // cancel animation and stop loop during cleanup
       cancelAnimationFrame(rafIdRef.current)
     }
-  }, [brightness, canvasHeight, canvasWidth, contrast, isPageVisible, paletteColors, saturate])
+  }, [brightness, canvasHeight, canvasWidth, contrast, paletteColors, saturate])
 
   // setup canvas width/height from changes to video width/height + font size
   useEffect(() => {
@@ -102,15 +100,9 @@ export const usePixelatedVideo = ({
           setVideoHeight(video.videoHeight)
         }
       }
-      // pause video when tab isn't in focus
-      if (!isPageVisible) {
-        video.pause()
-      } else if (video.paused && video.readyState > 2) {
-        video.play()
-      }
     }
 
-  }, [mediaStream, isPageVisible])
+  }, [mediaStream])
 
   return { imageData, canvasWidth, canvasHeight }
 }
