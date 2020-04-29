@@ -8,3 +8,7 @@ Check it out [here](http://emojivision.netlify.app/)!
 - Average frames (slice time)
 - When page is no longer visible, instead of pausing video, kill webcam?
 - Find a way to debug devices...
+
+## Quantization Reading (for future optimization)
+http://www.leptonica.org/color-quantization.html
+- Error Diffusion Dithering

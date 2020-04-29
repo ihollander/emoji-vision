@@ -1,18 +1,8 @@
-import RgbQuant from 'rgbquant'
-import { analyzePixels, colorToNumber, numberToColor } from './utils/color'
+import { analyzePixels, colorToNumber } from '../utils/color'
 
-export const normalizePixelData = (pixelData, palette) => {
-  const paletteColors = Object.keys(palette).map(key => numberToColor(key))
-  if (paletteColors.length) {
-    const quant = new RgbQuant({
-      palette: paletteColors,
-      colors: paletteColors.length
-    })
-    pixelData = quant.reduce(pixelData)
-  }
-  return pixelData
-}
-
+// takes an emoji array, draws each emoji to canvas, and analyses average color
+// returns a palette array ([r,g,b],[r,g,b]) for quantization 
+// and an object for easy lookup of emoji based on corresponding color value
 export const buildPalette = emojiArray => {
   const palette = {}
   const paletteColors = []

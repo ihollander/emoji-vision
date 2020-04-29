@@ -7,7 +7,6 @@ import Controls from './components/Controls'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
 import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage } from './hooks';
-import * as paletteBuilderConsts from './constants/paletteBuilder'
 import * as modalConsts from './constants/modal'
 
 import emoji from './emoji.json'
@@ -16,7 +15,7 @@ const lessEmoji = emoji.slice(0, 500).join("")
 function App() {
   // emoji array used to build palette
   const [emoji, setEmoji] = useLocalStorage('emojiList', lessEmoji)
-  const { palette, paletteColors, status: paletteStatus } = usePaletteBuilder(emoji)
+  const { palette, paletteColors } = usePaletteBuilder(emoji)
 
   // video settings
   const [debug, setDebug] = useState(false)
@@ -34,6 +33,7 @@ function App() {
 
   // canvas for EmojiVision + image downloader in NavBar
   const canvasRef = useRef()
+
 
   useEffect(() => {
     ReactGA.initialize('UA-164891713-1');
@@ -69,7 +69,7 @@ function App() {
         videoDeviceCount={videoDevices.length}
       />
       <main style={{ display: "flex", height: "92vh", alignItems: "center" }}>
-        {paletteStatus === paletteBuilderConsts.READY && <EmojiVision
+        <EmojiVision
           canvasRef={canvasRef}
           debug={debug}
           palette={palette}
@@ -79,7 +79,7 @@ function App() {
           saturate={saturate}
           contrast={contrast}
           facingMode={facingMode}
-        />}
+        />
       </main>
       <Modal setActiveModal={setActiveModal} show={activeModal !== modalConsts.NONE}>
         {getModalContents()}

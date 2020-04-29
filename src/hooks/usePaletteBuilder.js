@@ -4,10 +4,9 @@ import * as paletteStatus from '../constants/paletteBuilder'
 import { useLocalStorage } from './useLocalStorage'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import worker from 'workerize-loader!../worker'
+import worker from 'workerize-loader!../workers/palette.worker'
 
 const splitter = new GraphemeSplitter()
-const workerInstance = worker()
 
 // TODO: config options
 // transparency threshold?
@@ -18,16 +17,21 @@ export const usePaletteBuilder = emojis => {
   const [paletteColors, setPaletteColors] = useLocalStorage('paletteColors', [])
 
   useEffect(() => {
+
     if (emojis && emojis.length) {
       setStatus(paletteStatus.PENDING)
       const emojiArray = splitter.splitGraphemes(emojis)
 
+      const workerInstance = worker()
       workerInstance.buildPalette(emojiArray)
         .then(({ palette, paletteColors }) => {
           setPalette(palette)
           setPaletteColors(paletteColors)
           setStatus(paletteStatus.READY)
+
+          workerInstance.terminate()
         })
+
     }
   }, [emojis, setPalette, setPaletteColors])
 
