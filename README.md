@@ -4,7 +4,7 @@
 
 ![screenshot](screenshots/emojivision.png?raw=true)
 
-Emoji are great! Who wouldn't want to live in a world made entirely of emoji? This humble project takes us one step closer to that goal.
+Emoji are great! Who wouldn't want to live in a world made entirely of emoji? This humble project takes us one step closer to that goal. See it at [emoji.video](https://emoji.video)
 
 ## Details
 

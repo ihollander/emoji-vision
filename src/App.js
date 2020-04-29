@@ -36,7 +36,8 @@ function App() {
 
 
   useEffect(() => {
-    ReactGA.initialize('UA-164891713-1');
+    ReactGA.initialize('UA-164891713-1')
+    ReactGA.pageview(window.location.pathname + window.location.search)
   }, [])
 
   // Render helpers
