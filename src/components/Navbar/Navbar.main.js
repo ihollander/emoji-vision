@@ -16,9 +16,19 @@ const Navbar = ({
   const logoRef = useRef()
 
   const handleClick = () => {
+    // create background canvas so we don't end up with transparent background
+    const bgCanvas = document.createElement("canvas")
+    bgCanvas.width = canvasRef.current.width
+    bgCanvas.height = canvasRef.current.height
+
+    const ctx = bgCanvas.getContext("2d")
+    ctx.fillStyle = "#FFF8E7"
+    ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height)
+    ctx.drawImage(canvasRef.current, 0, 0)
+
     const link = logoRef.current
-    link.download = 'emojivision.png'
-    link.href = canvasRef.current.toDataURL()
+    link.download = "emojivision.png"
+    link.href = bgCanvas.toDataURL()
     setLogo("📷")
   }
 
