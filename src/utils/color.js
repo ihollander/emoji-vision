@@ -44,3 +44,36 @@ export const analyzePixels = imageData => {
   const transparency = transparentPixels / pixels.length
   return { dominant, transparency, sqrt, facDominant, simple }
 }
+
+export const createPalette = (canvas, emojiArray) => {
+  const palette = {}
+  const paletteColors = []
+
+  const ctx = canvas.getContext('2d')
+  ctx.font = "15px monospace"
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
+
+  emojiArray.forEach(emoji => {
+    ctx.clearRect(0, 0, 16, 16)
+
+    // draw emoji
+    ctx.fillText(emoji, 8, 10)
+
+    const { data } = ctx.getImageData(0, 0, 16, 16)
+
+    // get RGB and transparency values
+    const analyzedData = analyzePixels(data)
+
+    if (analyzedData.dominant !== null) {
+      const [r, g, b] = analyzedData.dominant
+
+      // set palette color
+      const colorInt = colorToNumber(r, g, b)
+      palette[colorInt] = emoji
+      paletteColors.push([r, g, b])
+    }
+  })
+
+  return { palette, paletteColors }
+}
