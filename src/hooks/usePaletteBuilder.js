@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import GraphemeSplitter from 'grapheme-splitter'
 import * as paletteStatus from '../constants/paletteBuilder'
 import { useLocalStorage } from './useLocalStorage'
+import { createPalette } from '../utils/color'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import worker from 'workerize-loader!../workers/palette.worker'
@@ -22,15 +23,29 @@ export const usePaletteBuilder = emojis => {
       setStatus(paletteStatus.PENDING)
       const emojiArray = splitter.splitGraphemes(emojis)
 
-      const workerInstance = worker()
-      workerInstance.buildPalette(emojiArray)
-        .then(({ palette, paletteColors }) => {
-          setPalette(palette)
-          setPaletteColors(paletteColors)
-          setStatus(paletteStatus.READY)
+      // fallback for no offscreen canvas
+      if (window.OffscreenCanvas === undefined) {
 
-          workerInstance.terminate()
-        })
+        const canvas = document.createElement("canvas")
+        canvas.width = 16
+        canvas.height = 16
+
+        const { palette, paletteColors } = createPalette(canvas, emojiArray)
+
+        setPalette(palette)
+        setPaletteColors(paletteColors)
+      } else {
+        const workerInstance = worker()
+        workerInstance.buildPalette(emojiArray)
+          .then(({ palette, paletteColors }) => {
+            setPalette(palette)
+            setPaletteColors(paletteColors)
+            setStatus(paletteStatus.READY)
+
+            workerInstance.terminate()
+          })
+      }
+
 
     }
   }, [emojis, setPalette, setPaletteColors])
