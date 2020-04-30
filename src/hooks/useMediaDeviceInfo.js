@@ -1,30 +1,35 @@
 import { useState, useEffect } from 'react'
 
 export const useMediaDeviceInfo = () => {
-  const [videoDevices, setVideoDevices] = useState([])
+  const [videoInputDevices, setVideoInputDevices] = useState([])
   const [audioInputDevices, setAudioInputDevices] = useState([])
   const [audioOutputDevices, setAudioOutputDevices] = useState([])
 
   useEffect(() => {
     (async () => {
+      // getUserMedia to ensure devices are available for enumeration in Safari
+      await navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+
       const devices = await navigator.mediaDevices.enumerateDevices()
-      const videoDevices = []
+      const videoInputDevices = []
       const audioInputDevices = []
       const audioOutputDevices = []
+
       devices.forEach(device => {
         if (device.kind === "videoinput") {
-          videoDevices.push(device)
+          videoInputDevices.push(device)
         } else if (device.kind === "audioinput") {
           audioInputDevices.push(device)
         } else if (device.kind === "audiooutput") {
           audioOutputDevices.push(device)
         }
       })
-      setVideoDevices(videoDevices)
+
+      setVideoInputDevices(videoInputDevices)
       setAudioInputDevices(audioInputDevices)
       setAudioOutputDevices(audioOutputDevices)
     })()
   }, [])
 
-  return { videoDevices, audioInputDevices, audioOutputDevices }
+  return { videoInputDevices, audioInputDevices, audioOutputDevices }
 }

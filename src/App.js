@@ -26,7 +26,7 @@ function App() {
   const [facingMode, setFacingMode] = useState("user")
 
   // device info
-  const { videoDevices } = useMediaDeviceInfo()
+  const { videoInputDevices } = useMediaDeviceInfo()
 
   // App UI state
   const [activeModal, setActiveModal] = useState(modalConsts.NONE)
@@ -67,7 +67,7 @@ function App() {
         setFacingMode={setFacingMode}
         debug={debug}
         setDebug={setDebug}
-        videoDeviceCount={videoDevices.length}
+        videoDeviceCount={videoInputDevices.length}
       />
       <main style={{ display: "flex", height: "92vh", alignItems: "center" }}>
         <EmojiVision

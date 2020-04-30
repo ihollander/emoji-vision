@@ -60,7 +60,6 @@ export const usePixelatedVideo = ({
         })
         pixelData = quant.reduce(pixelData)
 
-
         setImageData(pixelData)
       }
     }
@@ -94,6 +93,9 @@ export const usePixelatedVideo = ({
       if (video.srcObject !== mediaStream) {
         video.srcObject = mediaStream
         video.autoplay = true
+        video.oncanplay = () => {
+          video.play()
+        }
 
         video.onloadeddata = () => {
           setVideoWidth(video.videoWidth)

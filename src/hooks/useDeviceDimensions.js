@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 export const useDeviceDimensions = () => {
-  const [videoDevices, setVideoDevices] = useState([])
   const [orientation, setOrientation] = useState(null)
   const [screenWidth, setScreenWidth] = useState(0)
   const [screenHeight, setScreenHeight] = useState(0)
@@ -9,28 +8,23 @@ export const useDeviceDimensions = () => {
   useEffect(() => {
     const onDeviceOrientation = () => {
       const orientation = (window.screen.orientation || {}).type || window.screen.mozOrientation || window.screen.msOrientation
+
       setScreenWidth(window.screen.width)
       setScreenHeight(window.screen.height)
-      if (orientation.includes("landscape")) {
-        setOrientation("landscape")
-      } else {
+      if (orientation && orientation.includes("portrait")) {
         setOrientation("portrait")
+      } else {
+        setOrientation("landscape")
       }
     }
 
     window.addEventListener("deviceorientation", onDeviceOrientation)
-
-    navigator.mediaDevices.enumerateDevices()
-      .then(devices => {
-        const videoDevices = devices.filter(device => device.kind === "videoinput")
-        setVideoDevices(videoDevices)
-        onDeviceOrientation()
-      })
+    onDeviceOrientation()
 
     return () => {
       window.removeEventListener("deviceorientation", onDeviceOrientation)
     }
   }, [])
 
-  return { videoDevices, orientation, screenWidth, screenHeight }
+  return { orientation, screenWidth, screenHeight }
 }
