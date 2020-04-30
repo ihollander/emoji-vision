@@ -15,7 +15,8 @@ const Controls = ({
   fontSize, setFontSize,
   brightness, setBrightness,
   saturate, setSaturate,
-  contrast, setContrast
+  contrast, setContrast,
+  debug, setDebug
 }) => {
   return (
     <>
@@ -53,6 +54,11 @@ const Controls = ({
         <ButtonSelector>
           {sizes.map(size => <SizeSelector key={size} emoji="😀" label="Size" selected={fontSize === size} size={size} onClick={() => setFontSize(size)} />)}
         </ButtonSelector>
+      </InputContainer>
+      <InputContainer>
+        <Button onClick={() => setDebug(!debug)}>
+          <Emoji label="Palette" emoji={debug ? "🦋" : "🐛"} />
+        </Button>
       </InputContainer>
     </>
   )
