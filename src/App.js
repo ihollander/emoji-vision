@@ -10,6 +10,7 @@ import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage } from './hooks'
 import * as modalConsts from './constants/modal'
 
 import emoji from './emoji.json'
+import { Button, Emoji } from './components/Shared';
 const lessEmoji = emoji.slice(0, 500).join("")
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
           contrast={contrast} setContrast={setContrast}
           saturate={saturate} setSaturate={setSaturate}
           brightness={brightness} setBrightness={setBrightness}
+          debug={debug} setDebug={setDebug}
         />
       case modalConsts.PALETTE:
         return <PaletteBuilder emoji={emoji} setEmoji={setEmoji} />
@@ -65,8 +67,6 @@ function App() {
         setActiveModal={setActiveModal}
         facingMode={facingMode}
         setFacingMode={setFacingMode}
-        debug={debug}
-        setDebug={setDebug}
         videoDeviceCount={videoInputDevices.length}
       />
       <main style={{ display: "flex", height: "92vh", alignItems: "center" }}>

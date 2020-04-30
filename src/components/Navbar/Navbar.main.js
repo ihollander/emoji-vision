@@ -8,7 +8,6 @@ const Navbar = ({
   canvasRef,
   activeModal, setActiveModal,
   facingMode, setFacingMode,
-  debug, setDebug,
   videoDeviceCount
 }) => {
   // favicon for funsiez
@@ -56,9 +55,11 @@ const Navbar = ({
         <Button onClick={() => setActiveModal(activeModal === modalConsts.CONTROLS ? modalConsts.NONE : modalConsts.CONTROLS)}>
           <Emoji label="Wrench" emoji="🔧" />
         </Button>
-        <Button onClick={() => setDebug(!debug)}>
-          <Emoji label="Palette" emoji={debug ? "🦋" : "🐛"} />
-        </Button>
+        <a href="https://github.com/ihollander/emoji-vision">
+          <Button>
+            <Emoji label="about" emoji="🤔" />
+          </Button>
+        </a>
       </Nav>
     </Header>
   )
