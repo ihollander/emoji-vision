@@ -7,8 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint",
-    "format": "prettier --write",
+    "lint:js": "eslint",
+    "lint:css": "stylelint \"**/*.css\"",
+    "format:js": "prettier . --write",
+    "format:css": "stylelint \"**/*.css\" --fix",
     "prepare": "husky"
   },
   "dependencies": {
@@ -37,10 +39,13 @@
     "husky": "^9.1.5",
     "lint-staged": "^15.2.9",
     "prettier": "3.3.3",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1",
     "vite": "^5.4.2",
     "vite-plugin-comlink": "^5.0.1"
   },
   "lint-staged": {
+    "*.css": "stylelint",
     "*.{js,jsx}": [
       "eslint",
       "prettier --check"
