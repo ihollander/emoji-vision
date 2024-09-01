@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react"
+import { useEffect, useState } from "react"
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API#Use_cases
 let hidden, visibilityChange
@@ -6,11 +6,11 @@ if (typeof document.hidden !== "undefined") {
   hidden = "hidden"
   visibilityChange = "visibilitychange"
 } else if (typeof document.msHidden !== "undefined") {
-  hidden = "msHidden";
-  visibilityChange = "msvisibilitychange";
+  hidden = "msHidden"
+  visibilityChange = "msvisibilitychange"
 } else if (typeof document.webkitHidden !== "undefined") {
-  hidden = "webkitHidden";
-  visibilityChange = "webkitvisibilitychange";
+  hidden = "webkitHidden"
+  visibilityChange = "webkitvisibilitychange"
 }
 
 export const usePageVisibility = () => {
@@ -21,10 +21,14 @@ export const usePageVisibility = () => {
       setIsVisible(!document[hidden])
     }
 
-    document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    document.addEventListener(visibilityChange, handleVisibilityChange, false)
 
     return () => {
-      document.removeEventListener(visibilityChange, handleVisibilityChange, false);
+      document.removeEventListener(
+        visibilityChange,
+        handleVisibilityChange,
+        false,
+      )
     }
   }, [])
 

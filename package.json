@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint ./src"
+    "lint": "eslint",
+    "format": "prettier --write",
+    "prepare": "husky"
   },
   "dependencies": {
     "comlink": "^4.4.1",
@@ -26,12 +28,22 @@
     "@eslint/js": "^9.9.1",
     "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc-e56f4ae3-20240830",
     "eslint-plugin-react-refresh": "^0.4.11",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.9.0",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
+    "prettier": "3.3.3",
     "vite": "^5.4.2",
     "vite-plugin-comlink": "^5.0.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint",
+      "prettier --check"
+    ]
   }
 }

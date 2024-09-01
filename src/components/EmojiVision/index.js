@@ -1,5 +1,3 @@
-import EmojiVision from './EmojiVision.main'
+import EmojiVision from "./EmojiVision.main"
 
-export {
-  EmojiVision
-}
+export { EmojiVision }

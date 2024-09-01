@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components"
 
 export const InputContainer = styled.div`
   margin: 4rem 0;
@@ -18,7 +18,7 @@ export const Range = styled.div`
   align-items: center;
 `
 
-export const RangeBackground = styled.div` 
+export const RangeBackground = styled.div`
   position: relative;
   height: 100%;
   border-radius: 5px;
@@ -30,8 +30,8 @@ export const RangeThumb = styled.div`
   position: absolute;
   cursor: pointer;
 
-  span::selection { 
-    background: none; 
+  span::selection {
+    background: none;
   }
 `
 

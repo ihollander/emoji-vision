@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import { Textarea } from './style'
+import { Textarea } from "./style"
 
 const PaletteBuilder = ({ emoji, setEmoji }) => {
   const [value, setValue] = useState(emoji)
@@ -12,12 +12,7 @@ const PaletteBuilder = ({ emoji, setEmoji }) => {
     }
   }, [emoji, setEmoji, value])
 
-  return (
-    <Textarea
-      value={value}
-      onChange={e => setValue(e.target.value)}
-    />
-  )
+  return <Textarea value={value} onChange={(e) => setValue(e.target.value)} />
 }
 
 export default PaletteBuilder

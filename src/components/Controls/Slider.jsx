@@ -1,16 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useRef } from "react"
 
-import Emoji from '../Shared/Emoji'
-import { Range, RangeBackground, RangeThumb } from './style'
+import Emoji from "../Shared/Emoji"
+import { Range, RangeBackground, RangeThumb } from "./style"
 
-const Slider = ({
-  emoji,
-  label,
-  value,
-  onChange,
-  min = 0.0,
-  max = 1.0
-}) => {
+const Slider = ({ emoji, label, value, onChange, min = 0.0, max = 1.0 }) => {
   const rangeRef = useRef()
   const thumbRef = useRef()
 
@@ -20,7 +13,8 @@ const Slider = ({
     const start = 0
     const end = rangeRef.current.offsetWidth - thumbRef.current.offsetWidth
 
-    let newX = clientX - diff.current - rangeRef.current.getBoundingClientRect().left
+    let newX =
+      clientX - diff.current - rangeRef.current.getBoundingClientRect().left
     if (newX < start) {
       newX = 0
     }
@@ -29,7 +23,7 @@ const Slider = ({
     }
 
     const pct = (100 * newX) / end
-    const newValue = (pct / 100 * (max - min)).toFixed(1)
+    const newValue = ((pct / 100) * (max - min)).toFixed(1)
     onChange(newValue)
   }
 
@@ -38,41 +32,42 @@ const Slider = ({
   }
 
   const handleMouseUp = () => {
-    document.removeEventListener('mouseup', handleMouseUp)
-    document.removeEventListener('touchmove', handleTouchMove)
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('touchend', handleMouseUp)
+    document.removeEventListener("mouseup", handleMouseUp)
+    document.removeEventListener("touchmove", handleTouchMove)
+    document.removeEventListener("mousemove", handleMouseMove)
+    document.removeEventListener("touchend", handleMouseUp)
   }
 
   const handleMouseDown = ({ clientX }) => {
     diff.current = clientX - thumbRef.current.getBoundingClientRect().left
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
+    document.addEventListener("mousemove", handleMouseMove)
+    document.addEventListener("mouseup", handleMouseUp)
   }
 
   const handleTouchStart = ({ touches }) => {
     const { clientX } = touches[0]
     diff.current = clientX - thumbRef.current.getBoundingClientRect().left
 
-    document.addEventListener('touchmove', handleTouchMove)
-    document.addEventListener('touchend', handleMouseUp)
+    document.addEventListener("touchmove", handleTouchMove)
+    document.addEventListener("touchend", handleMouseUp)
   }
 
-  const percentage = value / (max - min) * 100
+  const percentage = (value / (max - min)) * 100
 
   return (
     <Range ref={rangeRef}>
       <RangeBackground
         style={{
           background: `hsl(0, 0%, ${percentage}%)`,
-          width: `${percentage}%`
+          width: `${percentage}%`,
         }}
       />
-      <RangeThumb ref={thumbRef}
+      <RangeThumb
+        ref={thumbRef}
         onTouchStart={handleTouchStart}
         onMouseDown={handleMouseDown}
         style={{
-          left: `calc(${percentage}% - 1rem)`
+          left: `calc(${percentage}% - 1rem)`,
         }}
       >
         <Emoji emoji={emoji} label={label} />

@@ -1,9 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
-import * as userMediaStatus from '../../constants/userMedia'
-import { useDeviceDimensions, usePixelatedVideo,useUserMedia } from '../../hooks'
-import { colorToNumber } from '../../utils/color'
-import { CanvasContainer } from './style'
+import * as userMediaStatus from "../../constants/userMedia"
+import {
+  useDeviceDimensions,
+  usePixelatedVideo,
+  useUserMedia,
+} from "../../hooks"
+import { colorToNumber } from "../../utils/color"
+import { CanvasContainer } from "./style"
 
 const EmojiVision = ({
   canvasRef,
@@ -14,9 +18,8 @@ const EmojiVision = ({
   saturate,
   contrast,
   facingMode,
-  debug
+  debug,
 }) => {
-
   const { orientation, screenWidth, screenHeight } = useDeviceDimensions()
   const deviceAspectRatio = screenWidth / screenHeight
 
@@ -24,9 +27,24 @@ const EmojiVision = ({
   const fpsRef = useRef()
   const lastCalledTimeRef = useRef()
 
-  const { status: mediaStatus, mediaStream, activeCamera } = useUserMedia({ orientation, facingMode })
+  const {
+    status: mediaStatus,
+    mediaStream,
+    activeCamera,
+  } = useUserMedia({ orientation, facingMode })
 
-  const { canvasWidth: pixelatedCanvasWidth, canvasHeight: pixelatedCanvasHeight, imageData } = usePixelatedVideo({ fontSize, mediaStream, paletteColors, brightness, saturate, contrast })
+  const {
+    canvasWidth: pixelatedCanvasWidth,
+    canvasHeight: pixelatedCanvasHeight,
+    imageData,
+  } = usePixelatedVideo({
+    fontSize,
+    mediaStream,
+    paletteColors,
+    brightness,
+    saturate,
+    contrast,
+  })
 
   const emojiCanvasWidth = pixelatedCanvasWidth * fontSize * 2
   const emojiCanvasHeight = pixelatedCanvasHeight * fontSize * 2
@@ -41,9 +59,13 @@ const EmojiVision = ({
 
   // // take new imageData and draw emojis
   useEffect(() => {
-    if (canvasRef.current && imageData && mediaStatus === userMediaStatus.READY) {
+    if (
+      canvasRef.current &&
+      imageData &&
+      mediaStatus === userMediaStatus.READY
+    ) {
       // setup context
-      const ctx = canvasRef.current.getContext('2d')
+      const ctx = canvasRef.current.getContext("2d")
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
       ctx.font = `${fontSize * 2}px sans-serif`
       ctx.textAlign = "left"
@@ -85,7 +107,7 @@ const EmojiVision = ({
   // debug
   useEffect(() => {
     if (canvasRef.current && debug && mediaStatus === userMediaStatus.READY) {
-      const ctx = canvasRef.current.getContext('2d')
+      const ctx = canvasRef.current.getContext("2d")
 
       const drawStrokedText = (text, x, y) => {
         ctx.font = `bold 48px sans-serif`
@@ -96,9 +118,9 @@ const EmojiVision = ({
         ctx.strokeText(text, x, y)
       }
 
-      const drawFilters = filters => {
+      const drawFilters = (filters) => {
         Object.keys(filters).forEach((filter, index) => {
-          drawStrokedText(`${filter}: ${filters[filter]}`, 20, 100 + (index * 50))
+          drawStrokedText(`${filter}: ${filters[filter]}`, 20, 100 + index * 50)
         })
       }
 
@@ -107,15 +129,48 @@ const EmojiVision = ({
         lastCalledTimeRef.current = performance.now()
         fpsRef.current = 0
       } else {
-        let delta = (performance.now() - lastCalledTimeRef.current)
+        let delta = performance.now() - lastCalledTimeRef.current
         fpsRef.current = 1000 / delta
         lastCalledTimeRef.current = performance.now()
       }
 
       const fps = fpsRef.current.toFixed(2)
-      drawFilters({ fps, screenWidth, screenHeight, pixelatedCanvasWidth, pixelatedCanvasHeight, emojiCanvasWidth, emojiCanvasHeight, deviceAspectRatio, contrast, brightness, saturate, orientation, facingMode, activeCamera })
+      drawFilters({
+        fps,
+        screenWidth,
+        screenHeight,
+        pixelatedCanvasWidth,
+        pixelatedCanvasHeight,
+        emojiCanvasWidth,
+        emojiCanvasHeight,
+        deviceAspectRatio,
+        contrast,
+        brightness,
+        saturate,
+        orientation,
+        facingMode,
+        activeCamera,
+      })
     }
-  }, [imageData, activeCamera, brightness, canvasRef, contrast, debug, deviceAspectRatio, emojiCanvasHeight, emojiCanvasWidth, facingMode, mediaStatus, orientation, pixelatedCanvasHeight, pixelatedCanvasWidth, saturate, screenHeight, screenWidth])
+  }, [
+    imageData,
+    activeCamera,
+    brightness,
+    canvasRef,
+    contrast,
+    debug,
+    deviceAspectRatio,
+    emojiCanvasHeight,
+    emojiCanvasWidth,
+    facingMode,
+    mediaStatus,
+    orientation,
+    pixelatedCanvasHeight,
+    pixelatedCanvasWidth,
+    saturate,
+    screenHeight,
+    screenWidth,
+  ])
 
   return (
     <CanvasContainer>

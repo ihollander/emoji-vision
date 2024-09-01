@@ -1,12 +1,12 @@
-import { useEffect, useRef,useState } from 'react'
+import { useEffect, useRef, useState } from "react"
 
-import * as userMediaStatus from '../constants/userMedia'
-import { usePageVisibility } from '.'
+import * as userMediaStatus from "../constants/userMedia"
+import { usePageVisibility } from "."
 
 // takes in constraint options (orientation and facingMode)
 // requests access to the user's webcam
 // returns the mediaStream (which can then be used as the srcObject for a video element)
-// also returns additional useful info, such as: 
+// also returns additional useful info, such as:
 // - the camera being used
 // - status info
 export const useUserMedia = ({ orientation, facingMode }) => {
@@ -22,18 +22,23 @@ export const useUserMedia = ({ orientation, facingMode }) => {
   // initialize
   useEffect(() => {
     if (isPageVisible) {
-      (async () => {
+      ;(async () => {
         setStatus(userMediaStatus.PENDING)
         // if the stream isn't set up or the camera switches, get a new mediaStream
-        if (!mediaStreamRef.current || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
+        if (
+          !mediaStreamRef.current ||
+          prevFacingModeRef.current !== facingMode ||
+          prevOrientationRef.current !== orientation
+        ) {
           try {
             // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "enviroment" } or { exact: "enviroment" }
-            const mode = facingMode === "user" ? "user" : { ideal: "environment" }
+            const mode =
+              facingMode === "user" ? "user" : { ideal: "environment" }
 
             // get the stream
             const stream = await navigator.mediaDevices.getUserMedia({
               frameRate: 30,
-              video: { facingMode: mode }
+              video: { facingMode: mode },
             })
 
             // save stream and track data
@@ -52,7 +57,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
       })()
     } else {
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getVideoTracks().forEach(track => {
+        mediaStreamRef.current.getVideoTracks().forEach((track) => {
           track.stop()
         })
         mediaStreamRef.current = null
@@ -63,7 +68,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
     // cleanup mediaStream when it's no longer needed (stop the tracks)
     return () => {
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getVideoTracks().forEach(track => {
+        mediaStreamRef.current.getVideoTracks().forEach((track) => {
           track.stop()
         })
         setStatus(userMediaStatus.ENDED)

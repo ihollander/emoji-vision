@@ -1,24 +1,23 @@
-import GraphemeSplitter from 'grapheme-splitter'
-import { useEffect,useState } from 'react'
-import { endpointSymbol } from "vite-plugin-comlink/symbol";
+import GraphemeSplitter from "grapheme-splitter"
+import { useEffect, useState } from "react"
+import { endpointSymbol } from "vite-plugin-comlink/symbol"
 
-import * as paletteStatus from '../constants/paletteBuilder'
-import { createPalette } from '../utils/color'
-import { paletteWorker } from '../workers'
-import { useLocalStorage } from './useLocalStorage'
+import * as paletteStatus from "../constants/paletteBuilder"
+import { createPalette } from "../utils/color"
+import { paletteWorker } from "../workers"
+import { useLocalStorage } from "./useLocalStorage"
 
 const splitter = new GraphemeSplitter()
 
 // TODO: config options
 // transparency threshold?
 // color analysis type?
-export const usePaletteBuilder = emojis => {
+export const usePaletteBuilder = (emojis) => {
   const [status, setStatus] = useState(paletteStatus.PENDING)
-  const [palette, setPalette] = useLocalStorage('palette', null)
-  const [paletteColors, setPaletteColors] = useLocalStorage('paletteColors', [])
+  const [palette, setPalette] = useLocalStorage("palette", null)
+  const [paletteColors, setPaletteColors] = useLocalStorage("paletteColors", [])
 
   useEffect(() => {
-
     if (emojis && emojis.length) {
       setStatus(paletteStatus.PENDING)
       const emojiArray = splitter.splitGraphemes(emojis)
@@ -33,9 +32,9 @@ export const usePaletteBuilder = emojis => {
 
         setPalette(palette)
         setPaletteColors(paletteColors)
-
       } else {
-        paletteWorker.buildPalette(emojiArray)
+        paletteWorker
+          .buildPalette(emojiArray)
           .then(({ palette, paletteColors }) => {
             setPalette(palette)
             setPaletteColors(paletteColors)

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components"
 
 export const CanvasContainer = styled.div`
   max-width: 1080px;
@@ -7,7 +7,7 @@ export const CanvasContainer = styled.div`
   canvas {
     width: 100%;
     max-height: calc(100vh - 6rem);
-    background-color: #FFF8E7;
+    background-color: #fff8e7;
   }
 
   @media screen and (min-width: 1080px) {

@@ -1,3 +1,3 @@
-import PaletteBuilder from './PaletteBuilder.main'
+import PaletteBuilder from "./PaletteBuilder.main"
 
 export default PaletteBuilder

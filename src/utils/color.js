@@ -1,9 +1,9 @@
-import { FastAverageColor } from 'fast-average-color'
-import quantize from 'quantize'
+import { FastAverageColor } from "fast-average-color"
+import quantize from "quantize"
 
 export const colorToNumber = (r, g, b) => (r << 16) + (g << 8) + b
 
-export const numberToColor = number => {
+export const numberToColor = (number) => {
   if (typeof number === "string") {
     number = parseInt(number, 10)
   }
@@ -11,15 +11,19 @@ export const numberToColor = number => {
   return [
     (number & 0xff0000) >> 16,
     (number & 0x00ff00) >> 8,
-    (number & 0x0000ff)
+    number & 0x0000ff,
   ]
 }
 
-export const analyzePixels = imageData => {
+export const analyzePixels = (imageData) => {
   const fac = new FastAverageColor()
   const sqrt = fac.getColorFromArray4(imageData).slice(0, 3)
-  const simple = fac.getColorFromArray4(imageData, { algorithm: "simple" }).slice(0, 3)
-  const facDominant = fac.getColorFromArray4(imageData, { algorithm: "dominant" }).slice(0, 3)
+  const simple = fac
+    .getColorFromArray4(imageData, { algorithm: "simple" })
+    .slice(0, 3)
+  const facDominant = fac
+    .getColorFromArray4(imageData, { algorithm: "dominant" })
+    .slice(0, 3)
 
   const pixels = []
   let transparentPixels = 0
@@ -49,12 +53,12 @@ export const createPalette = (canvas, emojiArray) => {
   const palette = {}
   const paletteColors = []
 
-  const ctx = canvas.getContext('2d')
+  const ctx = canvas.getContext("2d")
   ctx.font = "15px monospace"
   ctx.textAlign = "center"
   ctx.textBaseline = "middle"
 
-  emojiArray.forEach(emoji => {
+  emojiArray.forEach((emoji) => {
     ctx.clearRect(0, 0, 16, 16)
 
     // draw emoji

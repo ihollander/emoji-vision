@@ -1,7 +1,4 @@
-import Button from './Button'
-import Emoji from './Emoji'
+import Button from "./Button"
+import Emoji from "./Emoji"
 
-export {
-  Button,
-  Emoji
-}
+export { Button, Emoji }

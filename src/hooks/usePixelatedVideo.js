@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import RgbQuant from 'rgbquant'
+import { useEffect, useRef, useState } from "react"
+import RgbQuant from "rgbquant"
 
 // TODO: offload color normalization to worker thread?
 // this gives faster FPS but laggier video than doing work on main thread
@@ -10,7 +10,7 @@ export const usePixelatedVideo = ({
   paletteColors,
   brightness,
   saturate,
-  contrast
+  contrast,
 }) => {
   // imageData is the array of normalized pixels that will be returned
   const [imageData, setImageData] = useState(null)
@@ -33,7 +33,7 @@ export const usePixelatedVideo = ({
   const rafIdRef = useRef()
 
   useEffect(() => {
-    const ctx = canvasRef.current.getContext('2d')
+    const ctx = canvasRef.current.getContext("2d")
 
     // render helper
     const render = () => {
@@ -44,9 +44,11 @@ export const usePixelatedVideo = ({
       if (videoRef.current.readyState === 4 && paletteColors.length) {
         // apply filters
         const filters = { brightness, saturate, contrast }
-        const filterString = Object.keys(filters).map(filter => {
-          return `${filter}(${filters[filter] || 1.0})`
-        }).join(" ")
+        const filterString = Object.keys(filters)
+          .map((filter) => {
+            return `${filter}(${filters[filter] || 1.0})`
+          })
+          .join(" ")
         ctx.filter = filterString
 
         // draw video
@@ -56,7 +58,7 @@ export const usePixelatedVideo = ({
 
         const quant = new RgbQuant({
           palette: paletteColors,
-          colors: paletteColors.length
+          colors: paletteColors.length,
         })
         pixelData = quant.reduce(pixelData)
 
@@ -103,7 +105,6 @@ export const usePixelatedVideo = ({
         }
       }
     }
-
   }, [mediaStream])
 
   return { imageData, canvasWidth, canvasHeight }

@@ -1,12 +1,12 @@
-import { useEffect, useRef,useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-export const useEmojiFavicon = emoji => {
+export const useEmojiFavicon = (emoji) => {
   const [value, setValue] = useState(emoji)
   const cache = useRef({})
 
   useEffect(() => {
     // make new favicon link
-    const updateFavicon = imgUrl => {
+    const updateFavicon = (imgUrl) => {
       const oldLink = document.querySelector("link[rel*='icon']")
       const newLink = document.createElement("link")
       newLink.id = "dynamic-favicon"
@@ -29,7 +29,7 @@ export const useEmojiFavicon = emoji => {
       canvas.height = 64
       canvas.width = 64
 
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext("2d")
 
       ctx.font = "64px monospace"
       ctx.textAlign = "center"

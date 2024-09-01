@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from "react"
 
 export const useDeviceDimensions = () => {
   const [orientation, setOrientation] = useState(null)
@@ -7,7 +7,10 @@ export const useDeviceDimensions = () => {
 
   useEffect(() => {
     const onDeviceOrientation = () => {
-      const orientation = (window.screen.orientation || {}).type || window.screen.mozOrientation || window.screen.msOrientation
+      const orientation =
+        (window.screen.orientation || {}).type ||
+        window.screen.mozOrientation ||
+        window.screen.msOrientation
 
       setScreenWidth(window.screen.width)
       setScreenHeight(window.screen.height)

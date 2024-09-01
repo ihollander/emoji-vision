@@ -1,9 +1,13 @@
-import { Button,Emoji } from '../Shared'
-import Slider from './Slider'
-import { ButtonSelector,InputContainer } from './style'
+import { Button, Emoji } from "../Shared"
+import Slider from "./Slider"
+import { ButtonSelector, InputContainer } from "./style"
 
 const SizeSelector = ({ emoji, label, size, selected, onClick }) => (
-  <Button className={selected ? "selected" : undefined} onClick={onClick} style={{ fontSize: `${size * 3}px` }}>
+  <Button
+    className={selected ? "selected" : undefined}
+    onClick={onClick}
+    style={{ fontSize: `${size * 3}px` }}
+  >
     <Emoji emoji={emoji} label={label} />
   </Button>
 )
@@ -11,11 +15,16 @@ const SizeSelector = ({ emoji, label, size, selected, onClick }) => (
 const sizes = [4, 8, 10, 16]
 
 const Controls = ({
-  fontSize, setFontSize,
-  brightness, setBrightness,
-  saturate, setSaturate,
-  contrast, setContrast,
-  debug, setDebug
+  fontSize,
+  setFontSize,
+  brightness,
+  setBrightness,
+  saturate,
+  setSaturate,
+  contrast,
+  setContrast,
+  debug,
+  setDebug,
 }) => {
   return (
     <>
@@ -51,7 +60,16 @@ const Controls = ({
       </InputContainer>
       <InputContainer>
         <ButtonSelector>
-          {sizes.map(size => <SizeSelector key={size} emoji="😀" label="Size" selected={fontSize === size} size={size} onClick={() => setFontSize(size)} />)}
+          {sizes.map((size) => (
+            <SizeSelector
+              key={size}
+              emoji="😀"
+              label="Size"
+              selected={fontSize === size}
+              size={size}
+              onClick={() => setFontSize(size)}
+            />
+          ))}
         </ButtonSelector>
       </InputContainer>
       <InputContainer>
