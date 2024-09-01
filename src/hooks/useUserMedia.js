@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef,useState } from 'react'
+
 import * as userMediaStatus from '../constants/userMedia'
 import { usePageVisibility } from '.'
 
@@ -44,7 +45,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
             // set refs to let us check when the user switches modes
             prevFacingModeRef.current = facingMode
             prevOrientationRef.current = orientation
-          } catch (err) {
+          } catch {
             setStatus(userMediaStatus.ERROR)
           }
         }

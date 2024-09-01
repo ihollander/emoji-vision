@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
-import { Range, RangeBackground, RangeThumb } from './style'
+
 import Emoji from '../Shared/Emoji'
+import { Range, RangeBackground, RangeThumb } from './style'
 
 const Slider = ({
   emoji,

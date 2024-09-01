@@ -1,4 +1,3 @@
-import React from 'react'
 import { StyledEmoji } from './style'
 
 const Emoji = ({ emoji, label }) => (

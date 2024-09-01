@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef,useState } from "react"
 
 export const useEmojiFavicon = emoji => {
   const [value, setValue] = useState(emoji)

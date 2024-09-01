@@ -1,15 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useEffect,useRef, useState } from 'react';
 import ReactGA from 'react-ga4';
 
-import PaletteBuilder from './components/PaletteBuilder/index'
-import EmojiVision from './components/EmojiVision/EmojiVision.main'
 import Controls from './components/Controls'
+import EmojiVision from './components/EmojiVision/EmojiVision.main'
 import Modal from './components/Modal'
 import Navbar from './components/Navbar'
-import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage } from './hooks';
+import PaletteBuilder from './components/PaletteBuilder/index'
 import * as modalConsts from './constants/modal'
-
 import emoji from './emoji.json'
+import { useLocalStorage,useMediaDeviceInfo, usePaletteBuilder } from './hooks';
 
 const lessEmoji = emoji.slice(0, 500).join("")
 
@@ -34,7 +33,6 @@ function App() {
 
   // canvas for EmojiVision + image downloader in NavBar
   const canvasRef = useRef()
-
 
   useEffect(() => {
     ReactGA.initialize('UA-164891713-1')

@@ -1,7 +1,6 @@
-import React from 'react'
-import { Emoji, Button } from '../Shared'
 import * as modalConsts from '../../constants/modal'
-import { StyledModal, ModalInner, ModalActions } from './style'
+import { Button,Emoji } from '../Shared'
+import { ModalActions,ModalInner, StyledModal } from './style'
 
 const Modal = ({ show, setActiveModal, children }) => {
 

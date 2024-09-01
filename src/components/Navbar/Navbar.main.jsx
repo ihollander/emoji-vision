@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
-import { Emoji, Button } from '../Shared'
-import { Header, Logo, Nav } from './style'
-import { useEmojiFavicon } from '../../hooks'
+import { useRef } from 'react'
+
 import * as modalConsts from '../../constants/modal'
+import { useEmojiFavicon } from '../../hooks'
+import { Button,Emoji } from '../Shared'
+import { Header, Logo, Nav } from './style'
 
 const Navbar = ({
   canvasRef,

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import RgbQuant from 'rgbquant'
 
 // TODO: offload color normalization to worker thread?

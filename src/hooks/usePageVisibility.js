@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react"
+import { useEffect,useState } from "react"
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API#Use_cases
 let hidden, visibilityChange
-if (typeof document.hidden !== undefined) {
+if (typeof document.hidden !== "undefined") {
   hidden = "hidden"
   visibilityChange = "visibilitychange"
 } else if (typeof document.msHidden !== "undefined") {

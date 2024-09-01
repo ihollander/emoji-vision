@@ -1,7 +1,6 @@
-import React from 'react'
+import { Button,Emoji } from '../Shared'
 import Slider from './Slider'
-import { InputContainer, ButtonSelector } from './style'
-import { Emoji, Button } from '../Shared'
+import { ButtonSelector,InputContainer } from './style'
 
 const SizeSelector = ({ emoji, label, size, selected, onClick }) => (
   <Button className={selected ? "selected" : undefined} onClick={onClick} style={{ fontSize: `${size * 3}px` }}>

@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
 import GraphemeSplitter from 'grapheme-splitter'
+import { useEffect,useState } from 'react'
 import { endpointSymbol } from "vite-plugin-comlink/symbol";
 
-import { useLocalStorage } from './useLocalStorage'
 import * as paletteStatus from '../constants/paletteBuilder'
 import { createPalette } from '../utils/color'
 import { paletteWorker } from '../workers'
+import { useLocalStorage } from './useLocalStorage'
 
 const splitter = new GraphemeSplitter()
 

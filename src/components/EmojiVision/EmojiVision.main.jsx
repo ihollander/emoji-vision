@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react'
-import { CanvasContainer } from './style'
-import { colorToNumber } from '../../utils/color'
-import { useDeviceDimensions, useUserMedia, usePixelatedVideo } from '../../hooks'
+import { useEffect, useRef } from 'react'
+
 import * as userMediaStatus from '../../constants/userMedia'
+import { useDeviceDimensions, usePixelatedVideo,useUserMedia } from '../../hooks'
+import { colorToNumber } from '../../utils/color'
+import { CanvasContainer } from './style'
 
 const EmojiVision = ({
   canvasRef,

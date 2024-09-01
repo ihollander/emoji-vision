@@ -1,8 +1,6 @@
 # TODO
 
-- ESLint
-- Updated packages
-- New build tool/framework (Vite? Next?)
+- Prettier
 - Tailwind
 - Tests!
 - Github Actions
