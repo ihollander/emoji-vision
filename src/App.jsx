@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 
 import PaletteBuilder from './components/PaletteBuilder/index'
 import EmojiVision from './components/EmojiVision/EmojiVision.main'
@@ -10,7 +10,7 @@ import { useMediaDeviceInfo, usePaletteBuilder, useLocalStorage } from './hooks'
 import * as modalConsts from './constants/modal'
 
 import emoji from './emoji.json'
-import { Button, Emoji } from './components/Shared';
+
 const lessEmoji = emoji.slice(0, 500).join("")
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     ReactGA.initialize('UA-164891713-1')
-    ReactGA.pageview(window.location.pathname + window.location.search)
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
   }, [])
 
   // Render helpers

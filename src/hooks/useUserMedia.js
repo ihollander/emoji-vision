@@ -9,7 +9,7 @@ import { usePageVisibility } from '.'
 // - the camera being used
 // - status info
 export const useUserMedia = ({ orientation, facingMode }) => {
-  const [mediaStream, setMediaStream] = useState(null)
+  const mediaStreamRef = useRef()
   const [activeCamera, setActiveCamera] = useState(null)
   const [status, setStatus] = useState(userMediaStatus.PENDING)
 
@@ -24,7 +24,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
       (async () => {
         setStatus(userMediaStatus.PENDING)
         // if the stream isn't set up or the camera switches, get a new mediaStream
-        if (!mediaStream || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
+        if (!mediaStreamRef.current || prevFacingModeRef.current !== facingMode || prevOrientationRef.current !== orientation) {
           try {
             // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "enviroment" } or { exact: "enviroment" }
             const mode = facingMode === "user" ? "user" : { ideal: "environment" }
@@ -37,7 +37,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
 
             // save stream and track data
             const videoTrack = stream.getVideoTracks()[0]
-            setMediaStream(stream)
+            mediaStreamRef.current = stream
             setActiveCamera(videoTrack.label)
             setStatus(userMediaStatus.READY)
 
@@ -46,30 +46,29 @@ export const useUserMedia = ({ orientation, facingMode }) => {
             prevOrientationRef.current = orientation
           } catch (err) {
             setStatus(userMediaStatus.ERROR)
-            // console.error(err)
           }
         }
       })()
     } else {
-      if (mediaStream) {
-        mediaStream.getVideoTracks().forEach(track => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getVideoTracks().forEach(track => {
           track.stop()
         })
-        setMediaStream(null)
+        mediaStreamRef.current = null
         setStatus(userMediaStatus.ENDED)
       }
     }
 
     // cleanup mediaStream when it's no longer needed (stop the tracks)
     return () => {
-      if (mediaStream) {
-        mediaStream.getVideoTracks().forEach(track => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getVideoTracks().forEach(track => {
           track.stop()
         })
         setStatus(userMediaStatus.ENDED)
       }
     }
-  }, [mediaStream, orientation, facingMode, isPageVisible])
+  }, [orientation, facingMode, isPageVisible])
 
-  return { mediaStream, status, activeCamera }
+  return { mediaStream: mediaStreamRef.current, status, activeCamera }
 }

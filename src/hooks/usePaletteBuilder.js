@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import GraphemeSplitter from 'grapheme-splitter'
-import * as paletteStatus from '../constants/paletteBuilder'
-import { useLocalStorage } from './useLocalStorage'
-import { createPalette } from '../utils/color'
+import { endpointSymbol } from "vite-plugin-comlink/symbol";
 
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import worker from 'workerize-loader!../workers/palette.worker'
+import { useLocalStorage } from './useLocalStorage'
+import * as paletteStatus from '../constants/paletteBuilder'
+import { createPalette } from '../utils/color'
+import { paletteWorker } from '../workers'
 
 const splitter = new GraphemeSplitter()
 
@@ -25,7 +25,6 @@ export const usePaletteBuilder = emojis => {
 
       // fallback for no offscreen canvas
       if (window.OffscreenCanvas === undefined) {
-
         const canvas = document.createElement("canvas")
         canvas.width = 16
         canvas.height = 16
@@ -34,19 +33,16 @@ export const usePaletteBuilder = emojis => {
 
         setPalette(palette)
         setPaletteColors(paletteColors)
+
       } else {
-        const workerInstance = worker()
-        workerInstance.buildPalette(emojiArray)
+        paletteWorker.buildPalette(emojiArray)
           .then(({ palette, paletteColors }) => {
             setPalette(palette)
             setPaletteColors(paletteColors)
             setStatus(paletteStatus.READY)
-
-            workerInstance.terminate()
+            paletteWorker[endpointSymbol].terminate()
           })
       }
-
-
     }
   }, [emojis, setPalette, setPaletteColors])
 

@@ -1,5 +1,5 @@
 import quantize from 'quantize'
-import FastAverageColor from 'fast-average-color'
+import { FastAverageColor } from 'fast-average-color'
 
 export const colorToNumber = (r, g, b) => (r << 16) + (g << 8) + b
 
