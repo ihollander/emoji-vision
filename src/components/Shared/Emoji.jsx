@@ -1,9 +1,7 @@
-import { StyledEmoji } from "./style"
-
 const Emoji = ({ emoji, label }) => (
-  <StyledEmoji role="img" aria-label={label}>
+  <span role="img" aria-label={label} className="select-none">
     {emoji}
-  </StyledEmoji>
+  </span>
 )
 
 export default Emoji

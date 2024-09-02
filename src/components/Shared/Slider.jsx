@@ -1,7 +1,6 @@
 import React, { useRef } from "react"
 
 import Emoji from "../Shared/Emoji"
-import { Range, RangeBackground, RangeThumb } from "./style"
 
 const Slider = ({ emoji, label, value, onChange, min = 0.0, max = 1.0 }) => {
   const rangeRef = useRef()
@@ -55,24 +54,27 @@ const Slider = ({ emoji, label, value, onChange, min = 0.0, max = 1.0 }) => {
   const percentage = (value / (max - min)) * 100
 
   return (
-    <Range ref={rangeRef}>
-      <RangeBackground
-        style={{
-          background: `hsl(0, 0%, ${percentage}%)`,
-          width: `${percentage}%`,
-        }}
-      />
-      <RangeThumb
-        ref={thumbRef}
-        onTouchStart={handleTouchStart}
-        onMouseDown={handleMouseDown}
-        style={{
-          left: `calc(${percentage}% - 1rem)`,
-        }}
-      >
-        <Emoji emoji={emoji} label={label} />
-      </RangeThumb>
-    </Range>
+    <div ref={rangeRef} className="py-4 w-full">
+      <div className="relative h-3 rounded flex items-center bg-white">
+        <div
+          className="relative h-full rounded bg-black"
+          style={{
+            width: `${percentage}%`,
+          }}
+        />
+        <div
+          ref={thumbRef}
+          className="absolute bg-transparent text-4xl cursor-pointer"
+          onTouchStart={handleTouchStart}
+          onMouseDown={handleMouseDown}
+          style={{
+            left: `calc(${percentage}% - 1rem)`,
+          }}
+        >
+          <Emoji emoji={emoji} label={label} />
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -1,13 +1,8 @@
 import { useEffect, useRef } from "react"
 
-import * as userMediaStatus from "../../constants/userMedia"
-import {
-  useDeviceDimensions,
-  usePixelatedVideo,
-  useUserMedia,
-} from "../../hooks"
-import { colorToNumber } from "../../utils/color"
-import { CanvasContainer } from "./style"
+import * as userMediaStatus from "../constants/userMedia"
+import { useDeviceDimensions, usePixelatedVideo, useUserMedia } from "../hooks"
+import { colorToNumber } from "../utils/color"
 
 const EmojiVision = ({
   canvasRef,
@@ -173,9 +168,14 @@ const EmojiVision = ({
   ])
 
   return (
-    <CanvasContainer>
-      <canvas ref={canvasRef} />
-    </CanvasContainer>
+    <main className="flex items-center p-4">
+      <div className="max-w-7xl mx-auto">
+        <canvas
+          className="w-full max-h-[calc(100vh-6.5rem)] bg-white"
+          ref={canvasRef}
+        />
+      </div>
+    </main>
   )
 }
 

@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react"
 import ReactGA from "react-ga4"
 
 import Controls from "./components/Controls"
-import EmojiVision from "./components/EmojiVision/EmojiVision.main"
+import EmojiVision from "./components/EmojiVision"
 import Modal from "./components/Modal"
 import Navbar from "./components/Navbar"
-import PaletteBuilder from "./components/PaletteBuilder/index"
+import PaletteBuilder from "./components/PaletteBuilder"
 import * as modalConsts from "./constants/modal"
 import emoji from "./emoji.json"
 import { useLocalStorage, useMediaDeviceInfo, usePaletteBuilder } from "./hooks"
@@ -77,19 +77,17 @@ function App() {
         setFacingMode={setFacingMode}
         videoDeviceCount={videoInputDevices.length}
       />
-      <main style={{ display: "flex", height: "92vh", alignItems: "center" }}>
-        <EmojiVision
-          canvasRef={canvasRef}
-          debug={debug}
-          palette={palette}
-          paletteColors={paletteColors}
-          fontSize={fontSize}
-          brightness={brightness}
-          saturate={saturate}
-          contrast={contrast}
-          facingMode={facingMode}
-        />
-      </main>
+      <EmojiVision
+        canvasRef={canvasRef}
+        debug={debug}
+        palette={palette}
+        paletteColors={paletteColors}
+        fontSize={fontSize}
+        brightness={brightness}
+        saturate={saturate}
+        contrast={contrast}
+        facingMode={facingMode}
+      />
       <Modal
         setActiveModal={setActiveModal}
         show={activeModal !== modalConsts.NONE}
