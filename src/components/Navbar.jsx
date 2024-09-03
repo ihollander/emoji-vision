@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react"
 
-import * as modalConsts from "../constants/modal"
-import { useEmojiFavicon } from "../hooks"
+import { useEmojiFavicon, useVideoDeviceInfo } from "../hooks"
+import useControls from "../hooks/useControls"
+import Controls from "./Controls"
+import Modal from "./Modal"
+import PaletteBuilder from "./PaletteBuilder"
 import { Button, ButtonLink, Emoji } from "./Shared"
 
-const Navbar = ({
-  canvasRef,
-  activeModal,
-  setActiveModal,
-  facingMode,
-  setFacingMode,
-  videoDeviceCount,
-}) => {
-  // favicon for funsiez
+const Navbar = ({ canvasRef }) => {
+  const videoInputDevices = useVideoDeviceInfo()
+
+  const { facingMode, setFacingMode } = useControls()
+
   const [logo, setLogo] = useEmojiFavicon("📷")
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -49,29 +48,13 @@ const Navbar = ({
     setFacingMode(facingMode === "user" ? "environment" : "user")
   }
 
-  const handlePaletteClick = () => {
-    setActiveModal(
-      activeModal === modalConsts.PALETTE
-        ? modalConsts.NONE
-        : modalConsts.PALETTE,
-    )
-  }
-
-  const handleSettingsClick = () => {
-    setActiveModal(
-      activeModal === modalConsts.CONTROLS
-        ? modalConsts.NONE
-        : modalConsts.CONTROLS,
-    )
-  }
-
   return (
-    <header className="flex justify-between items-center bg-yellow px-4 py-3">
+    <header className="flex items-center justify-between bg-yellow px-4 py-3">
       <Button onClick={handleCameraClick}>
         <Emoji label="Camera" emoji={logo} />
       </Button>
       <nav className="flex gap-2">
-        {videoDeviceCount > 1 ? (
+        {videoInputDevices.length > 1 ? (
           <Button onClick={handleFaceClick}>
             <Emoji
               label="Change Camera"
@@ -79,12 +62,12 @@ const Navbar = ({
             />
           </Button>
         ) : null}
-        <Button onClick={handlePaletteClick}>
-          <Emoji label="Palette" emoji="🎨" />
-        </Button>
-        <Button onClick={handleSettingsClick}>
-          <Emoji label="Wrench" emoji="🔧" />
-        </Button>
+        <Modal emoji="🎨" label="Palette">
+          <PaletteBuilder />
+        </Modal>
+        <Modal emoji="🔧" label="Settings">
+          <Controls />
+        </Modal>
         <ButtonLink
           href="https://github.com/ihollander/emoji-vision"
           target="_blank"

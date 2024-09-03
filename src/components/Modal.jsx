@@ -1,36 +1,35 @@
-import classNames from "classnames"
+import * as RadixDialog from "@radix-ui/react-dialog"
 
-import * as modalConsts from "../constants/modal"
 import { Button, Emoji } from "./Shared"
 
-const Modal = ({ show, setActiveModal, children }) => {
-  const closeModal = (e) => {
-    if (e.target.classList.contains("open")) {
-      setActiveModal(modalConsts.NONE)
-    }
-  }
-
+const Modal = ({ children, emoji, label }) => {
   return (
-    <div
-      onClick={closeModal}
-      className={classNames(
-        "absolute top-0 bottom-0 right-0 left-0 bg-black bg-opacity-80 flex justify-center pt-28",
-        {
-          invisible: !show,
-        },
-      )}
-    >
-      <div className="w-[40rem] h-fit p-5">
-        <div className="p-3 rounded bg-white bg-opacity-80">
-          <div className="flex justify-end mb-4">
-            <Button size="md" onClick={() => setActiveModal(modalConsts.NONE)}>
-              <Emoji emoji="🙅‍♀️" label="close" />
-            </Button>
+    <RadixDialog.Root>
+      <RadixDialog.Trigger asChild>
+        <Button>
+          <Emoji label={label} emoji={emoji} />
+        </Button>
+      </RadixDialog.Trigger>
+      <RadixDialog.Portal>
+        <RadixDialog.Overlay className="fixed inset-0 bg-black bg-opacity-80" />
+        <RadixDialog.Content
+          aria-describedby={undefined}
+          className="fixed inset-1/2 h-fit max-h-[calc(100vh-4rem)] w-[40rem] max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded bg-white bg-opacity-80 p-4"
+        >
+          <RadixDialog.Title>
+            <span className="sr-only">{label}</span>
+          </RadixDialog.Title>
+          <div className="mb-4 flex justify-end">
+            <RadixDialog.Close asChild>
+              <Button size="sm">
+                <Emoji emoji="🙅‍♀️" label="Close" />
+              </Button>
+            </RadixDialog.Close>
           </div>
           {children}
-        </div>
-      </div>
-    </div>
+        </RadixDialog.Content>
+      </RadixDialog.Portal>
+    </RadixDialog.Root>
   )
 }
 

@@ -14,6 +14,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-slider": "^1.2.0",
     "classnames": "^2.5.1",
     "comlink": "^4.4.1",
     "fast-average-color": "^9.4.0",
@@ -41,6 +43,7 @@
     "lint-staged": "^15.2.9",
     "postcss": "^8.4.44",
     "prettier": "3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "stylelint": "^16.9.0",
     "stylelint-config-standard": "^36.0.1",
     "stylelint-config-tailwindcss": "^0.0.7",

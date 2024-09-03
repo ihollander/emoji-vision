@@ -1,20 +1,25 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 
-const PaletteBuilder = ({ emoji, setEmoji }) => {
-  const [value, setValue] = useState(emoji)
+import { usePaletteBuilder } from "../hooks"
 
+const PaletteBuilder = () => {
+  const { emoji, setEmoji } = usePaletteBuilder()
+  const textareaRef = useRef()
+
+  // only set new values when component unmounts
   useEffect(() => {
-    // only set new values when component unmounts
-    return () => {
-      setEmoji(value)
-    }
-  }, [emoji, setEmoji, value])
+    const { current } = textareaRef
+
+    return () => setEmoji(current.value)
+  }, [setEmoji])
 
   return (
     <textarea
-      className="w-full h-[28rem] bg-white text-lg resize-none"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
+      name="palette"
+      autoComplete="false"
+      className="h-[28rem] w-full resize-none bg-white text-lg"
+      defaultValue={emoji}
+      ref={textareaRef}
     />
   )
 }

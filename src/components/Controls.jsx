@@ -1,3 +1,4 @@
+import useControls from "../hooks/useControls"
 import { Button, Emoji, Slider } from "./Shared"
 
 const sizes = [4, 8, 10, 16]
@@ -9,18 +10,20 @@ const SIZE_MAP = {
   16: "lg",
 }
 
-const Controls = ({
-  fontSize,
-  setFontSize,
-  brightness,
-  setBrightness,
-  saturate,
-  setSaturate,
-  contrast,
-  setContrast,
-  debug,
-  setDebug,
-}) => {
+const Controls = () => {
+  const {
+    fontSize,
+    setFontSize,
+    brightness,
+    setBrightness,
+    saturate,
+    setSaturate,
+    contrast,
+    setContrast,
+    debug,
+    setDebug,
+  } = useControls()
+
   return (
     <div className="flex flex-col items-center gap-8">
       <Slider
@@ -47,7 +50,7 @@ const Controls = ({
         min={0.0}
         max={2.0}
       />
-      <div className="w-full flex items-center justify-evenly">
+      <div className="flex w-full items-center justify-evenly">
         {sizes.map((size) => (
           <Button
             key={size}

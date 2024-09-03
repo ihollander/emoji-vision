@@ -1,20 +1,22 @@
 import { useEffect, useRef } from "react"
 
 import * as userMediaStatus from "../constants/userMedia"
-import { useDeviceDimensions, usePixelatedVideo, useUserMedia } from "../hooks"
+import {
+  useDeviceDimensions,
+  usePaletteBuilder,
+  usePixelatedVideo,
+  useUserMedia,
+} from "../hooks"
+import useControls from "../hooks/useControls"
 import { colorToNumber } from "../utils/color"
 
-const EmojiVision = ({
-  canvasRef,
-  palette,
-  paletteColors,
-  fontSize,
-  brightness,
-  saturate,
-  contrast,
-  facingMode,
-  debug,
-}) => {
+const EmojiVision = ({ canvasRef }) => {
+  const { fontSize, brightness, saturate, contrast, facingMode, debug } =
+    useControls()
+
+  // emoji array used to build palette
+  const { palette, paletteColors } = usePaletteBuilder()
+
   const { orientation, screenWidth, screenHeight } = useDeviceDimensions()
   const deviceAspectRatio = screenWidth / screenHeight
 
@@ -169,9 +171,9 @@ const EmojiVision = ({
 
   return (
     <main className="flex items-center p-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         <canvas
-          className="w-full max-h-[calc(100vh-6.5rem)] bg-white"
+          className="max-h-[calc(100vh-6.5rem)] w-full bg-white"
           ref={canvasRef}
         />
       </div>

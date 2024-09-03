@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 
-export const useMediaDeviceInfo = () => {
+const useVideoDeviceInfo = () => {
   const [videoInputDevices, setVideoInputDevices] = useState([])
-  const [audioInputDevices, setAudioInputDevices] = useState([])
-  const [audioOutputDevices, setAudioOutputDevices] = useState([])
 
   useEffect(() => {
     ;(async () => {
@@ -12,24 +10,18 @@ export const useMediaDeviceInfo = () => {
 
       const devices = await navigator.mediaDevices.enumerateDevices()
       const videoInputDevices = []
-      const audioInputDevices = []
-      const audioOutputDevices = []
 
       devices.forEach((device) => {
         if (device.kind === "videoinput") {
           videoInputDevices.push(device)
-        } else if (device.kind === "audioinput") {
-          audioInputDevices.push(device)
-        } else if (device.kind === "audiooutput") {
-          audioOutputDevices.push(device)
         }
       })
 
       setVideoInputDevices(videoInputDevices)
-      setAudioInputDevices(audioInputDevices)
-      setAudioOutputDevices(audioOutputDevices)
     })()
   }, [])
 
-  return { videoInputDevices, audioInputDevices, audioOutputDevices }
+  return videoInputDevices
 }
+
+export default useVideoDeviceInfo

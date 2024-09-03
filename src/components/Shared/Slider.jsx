@@ -1,81 +1,40 @@
-import React, { useRef } from "react"
+import * as RadixSlider from "@radix-ui/react-slider"
+import { forwardRef } from "react"
 
 import Emoji from "../Shared/Emoji"
 
 const Slider = ({ emoji, label, value, onChange, min = 0.0, max = 1.0 }) => {
-  const rangeRef = useRef()
-  const thumbRef = useRef()
-
-  const diff = React.useRef(0)
-
-  const handleMouseMove = ({ clientX }) => {
-    const start = 0
-    const end = rangeRef.current.offsetWidth - thumbRef.current.offsetWidth
-
-    let newX =
-      clientX - diff.current - rangeRef.current.getBoundingClientRect().left
-    if (newX < start) {
-      newX = 0
-    }
-    if (newX > end) {
-      newX = end
-    }
-
-    const pct = (100 * newX) / end
-    const newValue = ((pct / 100) * (max - min)).toFixed(1)
-    onChange(newValue)
-  }
-
-  const handleTouchMove = ({ touches }) => {
-    handleMouseMove({ clientX: touches[0].clientX })
-  }
-
-  const handleMouseUp = () => {
-    document.removeEventListener("mouseup", handleMouseUp)
-    document.removeEventListener("touchmove", handleTouchMove)
-    document.removeEventListener("mousemove", handleMouseMove)
-    document.removeEventListener("touchend", handleMouseUp)
-  }
-
-  const handleMouseDown = ({ clientX }) => {
-    diff.current = clientX - thumbRef.current.getBoundingClientRect().left
-    document.addEventListener("mousemove", handleMouseMove)
-    document.addEventListener("mouseup", handleMouseUp)
-  }
-
-  const handleTouchStart = ({ touches }) => {
-    const { clientX } = touches[0]
-    diff.current = clientX - thumbRef.current.getBoundingClientRect().left
-
-    document.addEventListener("touchmove", handleTouchMove)
-    document.addEventListener("touchend", handleMouseUp)
-  }
-
-  const percentage = (value / (max - min)) * 100
+  const step = (max - min) / 100
 
   return (
-    <div ref={rangeRef} className="py-4 w-full">
-      <div className="relative h-3 rounded flex items-center bg-white">
-        <div
-          className="relative h-full rounded bg-black"
-          style={{
-            width: `${percentage}%`,
-          }}
-        />
-        <div
-          ref={thumbRef}
-          className="absolute bg-transparent text-4xl cursor-pointer"
-          onTouchStart={handleTouchStart}
-          onMouseDown={handleMouseDown}
-          style={{
-            left: `calc(${percentage}% - 1rem)`,
-          }}
-        >
+    <RadixSlider.Root
+      className="relative flex w-full touch-none select-none items-center py-4"
+      min={min}
+      max={max}
+      onValueChange={(value) => onChange(value[0])}
+      step={step}
+      value={[value]}
+    >
+      <RadixSlider.Track className="relative h-3 grow rounded bg-white">
+        <RadixSlider.Range className="absolute h-full rounded bg-black" />
+      </RadixSlider.Track>
+      <RadixSlider.Thumb asChild>
+        <Thumb>
           <Emoji emoji={emoji} label={label} />
-        </div>
-      </div>
-    </div>
+        </Thumb>
+      </RadixSlider.Thumb>
+    </RadixSlider.Root>
   )
 }
+
+const Thumb = forwardRef(function Thumb(props, forwardedRef) {
+  return (
+    <div
+      className="block flex h-12 w-12 items-center justify-center rounded-full bg-white text-3xl shadow-md outline-2 hover:shadow-lg focus:outline"
+      {...props}
+      ref={forwardedRef}
+    />
+  )
+})
 
 export default Slider
