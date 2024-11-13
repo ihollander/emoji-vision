@@ -49,7 +49,7 @@ const Navbar = ({ canvasRef }) => {
   }
 
   return (
-    <header className="flex items-center justify-between bg-yellow px-4 py-3">
+    <footer className="bg-transparent fixed bottom-0 flex w-full items-center justify-between px-4 py-3">
       <Button onClick={handleCameraClick}>
         <Emoji label="Camera" emoji={logo} />
       </Button>
@@ -76,7 +76,7 @@ const Navbar = ({ canvasRef }) => {
           <Emoji label="about" emoji="🤔" />
         </ButtonLink>
       </nav>
-    </header>
+    </footer>
   )
 }
 

@@ -8,11 +8,13 @@ import {
   useUserMedia,
 } from "../hooks"
 import useControls from "../hooks/useControls"
+import useWindowSize from "../hooks/useWindowSize"
 import { colorToNumber } from "../utils/color"
 
 const EmojiVision = ({ canvasRef }) => {
   const { fontSize, brightness, saturate, contrast, facingMode, debug } =
     useControls()
+  const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   // emoji array used to build palette
   const { palette, paletteColors } = usePaletteBuilder()
@@ -43,16 +45,13 @@ const EmojiVision = ({ canvasRef }) => {
     contrast,
   })
 
-  const emojiCanvasWidth = pixelatedCanvasWidth * fontSize * 2
-  const emojiCanvasHeight = pixelatedCanvasHeight * fontSize * 2
-
   // setup canvas
   useEffect(() => {
-    if (canvasRef.current && emojiCanvasWidth && emojiCanvasHeight) {
-      canvasRef.current.width = emojiCanvasWidth
-      canvasRef.current.height = emojiCanvasHeight
+    if (canvasRef.current && windowWidth > 0 && windowHeight > 0) {
+      canvasRef.current.width = windowWidth * 2
+      canvasRef.current.height = windowHeight * 2
     }
-  }, [canvasRef, emojiCanvasWidth, emojiCanvasHeight])
+  }, [canvasRef, windowWidth, windowHeight, fontSize])
 
   // // take new imageData and draw emojis
   useEffect(() => {
@@ -82,14 +81,15 @@ const EmojiVision = ({ canvasRef }) => {
         const g = imageData[i + 1]
         const b = imageData[i + 2]
 
-        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
-        // ctx.fillRect(nextX, nextY, 16, 16)
-
         // find the emoji
         const emoji = palette[colorToNumber(r, g, b)]
 
         // draw the emoji
         ctx.fillText(emoji, nextX, nextY)
+
+        // colors-only/debugging mode
+        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
+        // ctx.fillRect(nextX, nextY, 16, 16)
 
         // offset next position
         nextX += offsetX
@@ -138,8 +138,8 @@ const EmojiVision = ({ canvasRef }) => {
         screenHeight,
         pixelatedCanvasWidth,
         pixelatedCanvasHeight,
-        emojiCanvasWidth,
-        emojiCanvasHeight,
+        windowWidth,
+        windowHeight,
         deviceAspectRatio,
         contrast,
         brightness,
@@ -157,8 +157,8 @@ const EmojiVision = ({ canvasRef }) => {
     contrast,
     debug,
     deviceAspectRatio,
-    emojiCanvasHeight,
-    emojiCanvasWidth,
+    windowHeight,
+    windowWidth,
     facingMode,
     mediaStatus,
     orientation,
@@ -169,16 +169,7 @@ const EmojiVision = ({ canvasRef }) => {
     screenWidth,
   ])
 
-  return (
-    <main className="flex items-center p-4">
-      <div className="mx-auto max-w-7xl">
-        <canvas
-          className="max-h-[calc(100vh-6.5rem)] w-full bg-white"
-          ref={canvasRef}
-        />
-      </div>
-    </main>
-  )
+  return <canvas className="h-screen w-screen bg-black" ref={canvasRef} />
 }
 
 export default EmojiVision
