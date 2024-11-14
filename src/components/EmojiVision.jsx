@@ -1,53 +1,40 @@
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 
 import * as userMediaStatus from "../constants/userMedia"
-import { useDeviceDimensions, usePaletteBuilder, useUserMedia } from "../hooks"
+import { usePaletteBuilder, useUserMedia } from "../hooks"
 import useControls from "../hooks/useControls"
+import useDeviceOrientation from "../hooks/useDeviceOrientation"
 import useWindowSize from "../hooks/useWindowSize"
 import drawEmojiVideo from "../utils/draw"
 
 const EmojiVision = ({ canvasRef }) => {
   const { fontSize, brightness, saturate, contrast, facingMode, debug } =
     useControls()
+
+  // TODO: will this work for mobile, or do we need to use device orientation too?
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   // emoji array used to build palette
   const { palette, paletteColors } = usePaletteBuilder()
 
-  const { orientation } = useDeviceDimensions()
+  const orientation = useDeviceOrientation()
 
   const {
-    status: mediaStatus,
-    mediaStream,
     activeCamera,
+    status: mediaStatus,
+    video,
   } = useUserMedia({ orientation, facingMode })
 
-  const videoRef = useRef(document.createElement("video"))
-
-  // pipe mediaStream to video element
-  useEffect(() => {
-    const video = videoRef.current
-
-    if (mediaStream) {
-      // new source
-      if (video.srcObject !== mediaStream) {
-        video.srcObject = mediaStream
-        video.autoplay = true
-        video.oncanplay = () => video.play()
-      }
-    }
-  }, [mediaStream])
-
-  // // take new imageData and draw emojis
+  // draw emoji using media stream via video element
   useEffect(() => {
     if (
       canvasRef.current &&
       paletteColors.length &&
-      mediaStatus === userMediaStatus.READY
+      mediaStatus === userMediaStatus.PLAYING
     ) {
       const ctx = canvasRef.current.getContext("2d")
 
-      return drawEmojiVideo(ctx, videoRef.current, {
+      return drawEmojiVideo(ctx, video, {
         activeCamera,
         brightness,
         contrast,
@@ -74,6 +61,7 @@ const EmojiVision = ({ canvasRef }) => {
     palette,
     paletteColors,
     saturate,
+    video,
     windowWidth,
     windowHeight,
   ])

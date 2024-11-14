@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 
-export const useDeviceDimensions = () => {
+const useDeviceOrientation = () => {
   const [orientation, setOrientation] = useState(null)
-  const [screenWidth, setScreenWidth] = useState(0)
-  const [screenHeight, setScreenHeight] = useState(0)
 
   useEffect(() => {
     const onDeviceOrientation = () => {
@@ -12,8 +10,6 @@ export const useDeviceDimensions = () => {
         window.screen.mozOrientation ||
         window.screen.msOrientation
 
-      setScreenWidth(window.screen.width)
-      setScreenHeight(window.screen.height)
       if (orientation && orientation.includes("portrait")) {
         setOrientation("portrait")
       } else {
@@ -29,5 +25,7 @@ export const useDeviceDimensions = () => {
     }
   }, [])
 
-  return { orientation, screenWidth, screenHeight }
+  return orientation
 }
+
+export default useDeviceOrientation

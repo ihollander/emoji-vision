@@ -5,12 +5,13 @@ import { usePageVisibility } from "."
 
 // takes in constraint options (orientation and facingMode)
 // requests access to the user's webcam
-// returns the mediaStream (which can then be used as the srcObject for a video element)
+// returns a video element playing the webcam video
 // also returns additional useful info, such as:
 // - the camera being used
 // - status info
 export const useUserMedia = ({ orientation, facingMode }) => {
   const mediaStreamRef = useRef()
+  const videoRef = useRef(document.createElement("video"))
   const [activeCamera, setActiveCamera] = useState(null)
   const [status, setStatus] = useState(userMediaStatus.PENDING)
 
@@ -19,8 +20,9 @@ export const useUserMedia = ({ orientation, facingMode }) => {
 
   const isPageVisible = usePageVisibility()
 
-  // initialize
   useEffect(() => {
+    const video = videoRef.current
+
     if (isPageVisible) {
       ;(async () => {
         setStatus(userMediaStatus.PENDING)
@@ -31,7 +33,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
           prevOrientationRef.current !== orientation
         ) {
           try {
-            // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "enviroment" } or { exact: "enviroment" }
+            // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "environment" } or { exact: "environment" }
             const mode =
               facingMode === "user" ? "user" : { ideal: "environment" }
 
@@ -41,11 +43,20 @@ export const useUserMedia = ({ orientation, facingMode }) => {
               video: { facingMode: mode },
             })
 
-            // save stream and track data
+            // save stream ref for cleanup
             const videoTrack = stream.getVideoTracks()[0]
             mediaStreamRef.current = stream
+
+            // pipe to video
+            video.srcObject = stream
+            video.autoplay = true
+            video.oncanplay = () => video.play()
+            video.onplay = () => {
+              setStatus(userMediaStatus.PLAYING)
+            }
+
+            // track status
             setActiveCamera(videoTrack.label)
-            setStatus(userMediaStatus.READY)
 
             // set refs to let us check when the user switches modes
             prevFacingModeRef.current = facingMode
@@ -60,6 +71,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
         mediaStreamRef.current.getVideoTracks().forEach((track) => {
           track.stop()
         })
+        video.stop()
         mediaStreamRef.current = null
         setStatus(userMediaStatus.ENDED)
       }
@@ -71,10 +83,11 @@ export const useUserMedia = ({ orientation, facingMode }) => {
         mediaStreamRef.current.getVideoTracks().forEach((track) => {
           track.stop()
         })
+        video.stop()
         setStatus(userMediaStatus.ENDED)
       }
     }
   }, [orientation, facingMode, isPageVisible])
 
-  return { mediaStream: mediaStreamRef.current, status, activeCamera }
+  return { video: videoRef.current, status, activeCamera }
 }

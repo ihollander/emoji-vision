@@ -41,21 +41,13 @@ const getQuantizedPixelData = (ctx, paletteColors) => {
   return quant.reduce(rawPixelData)
 }
 
-const drawVideo = (ctx, src, { filter }) => {
+const drawVideo = (
+  ctx,
+  src,
+  { cropOffsetX, cropOffsetY, filter, resizeHeight, resizeWidth },
+) => {
   const resizeCanvas = document.createElement("canvas")
   const resizeCtx = resizeCanvas.getContext("2d")
-
-  const {
-    width: resizeWidth,
-    height: resizeHeight,
-    offsetX: cropOffsetX,
-    offsetY: cropOffsetY,
-  } = getResizedDimensions({
-    videoWidth: src.videoWidth,
-    videoHeight: src.videoHeight,
-    maxWidth: ctx.canvas.width,
-    maxHeight: ctx.canvas.height,
-  })
 
   // resize video
   resizeCtx.drawImage(src, 0, 0, resizeWidth, resizeHeight)
@@ -143,7 +135,6 @@ const drawEmojiVideo = (
     brightness,
     contrast,
     debug,
-    deviceAspectRatio,
     facingMode,
     fontSize,
     orientation,
@@ -168,6 +159,18 @@ const drawEmojiVideo = (
   videoCanvas.width = Math.floor(windowWidth / fontSize)
   videoCanvas.height = Math.floor(windowHeight / fontSize)
 
+  const {
+    width: resizeWidth,
+    height: resizeHeight,
+    offsetX: cropOffsetX,
+    offsetY: cropOffsetY,
+  } = getResizedDimensions({
+    videoWidth: video.videoWidth,
+    videoHeight: video.videoHeight,
+    maxWidth: videoCanvas.width,
+    maxHeight: videoCanvas.height,
+  })
+
   // build filters
   const filter = Object.entries({ brightness, contrast, saturate })
     .map(([key, value]) => `${key}(${value || 1.0})`)
@@ -180,7 +183,13 @@ const drawEmojiVideo = (
     // Setup next loop
     rafId = requestAnimationFrame(render)
 
-    drawVideo(videoCtx, video, { filter })
+    drawVideo(videoCtx, video, {
+      cropOffsetX,
+      cropOffsetY,
+      filter,
+      resizeHeight,
+      resizeWidth,
+    })
 
     drawEmojiPixels(ctx, videoCtx, {
       facingMode,
@@ -195,7 +204,6 @@ const drawEmojiVideo = (
         activeCamera,
         brightness,
         contrast,
-        deviceAspectRatio,
         fontSize,
         orientation,
         saturate,
