@@ -6,17 +6,11 @@ const getResizedDimensions = ({
 }) => {
   const videoAR = videoWidth / videoHeight
 
-  const width = Math.max(maxWidth, Math.floor(maxHeight * videoAR))
-  const height = Math.max(maxHeight, Math.floor(maxWidth / videoAR))
+  const width = Math.floor(maxHeight * videoAR)
+  const height = Math.floor(maxWidth / videoAR)
 
-  let offsetX = 0
-  let offsetY = 0
-
-  if (width > maxWidth) {
-    offsetX = (width - maxWidth) / 2
-  } else {
-    offsetY = (height - maxHeight) / 2
-  }
+  const offsetX = width > maxWidth ? (width - maxWidth) / 2 : 0
+  const offsetY = height > maxHeight ? (height - maxHeight) / 2 : 0
 
   return { width, height, offsetX, offsetY }
 }
@@ -27,10 +21,12 @@ const drawVideo = (
   { cropOffsetX, cropOffsetY, filter, resizeHeight, resizeWidth },
 ) => {
   const resizeCanvas = document.createElement("canvas")
+  resizeCanvas.width = resizeWidth
+  resizeCanvas.height = resizeHeight
+
   const resizeCtx = resizeCanvas.getContext("2d")
 
   // resize video
-  // TODO: fix scaling issue? (seems like this won't scale up right.......)
   resizeCtx.drawImage(src, 0, 0, resizeWidth, resizeHeight)
 
   // Apply filters to video
@@ -38,11 +34,11 @@ const drawVideo = (
 
   // Crop video
   ctx.drawImage(
-    resizeCtx.canvas,
+    resizeCanvas,
     cropOffsetX,
     cropOffsetY,
-    ctx.canvas.width,
-    ctx.canvas.height,
+    resizeWidth - cropOffsetX * 2,
+    resizeHeight - cropOffsetY * 2,
     0,
     0,
     ctx.canvas.width,
@@ -85,7 +81,7 @@ const drawEmojiPixels = (ctx, src, { facingMode, fontSize, palette }) => {
 
     // colors-only/debugging mode
     // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
-    // ctx.fillRect(nextX, nextY, 16, 16)
+    // ctx.fillRect(nextX, nextY, offset, offset)
 
     // offset next position
     nextX += offsetX
