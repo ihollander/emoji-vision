@@ -3,15 +3,16 @@ import { useEffect, useRef } from "react"
 import { usePaletteBuilder } from "../hooks"
 
 const PaletteBuilder = () => {
-  const { emoji, setEmoji } = usePaletteBuilder()
+  const { emoji, updatePalette } = usePaletteBuilder()
   const textareaRef = useRef()
 
   // only set new values when component unmounts
+  // TODO: find a nicer way to do this...
   useEffect(() => {
     const { current } = textareaRef
 
-    return () => setEmoji(current.value)
-  }, [setEmoji])
+    return () => updatePalette(current.value)
+  }, [updatePalette])
 
   return (
     <textarea

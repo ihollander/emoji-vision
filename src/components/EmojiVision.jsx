@@ -15,7 +15,7 @@ const EmojiVision = ({ canvasRef }) => {
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   // emoji array used to build palette
-  const { palette, paletteColors } = usePaletteBuilder()
+  const { palette } = usePaletteBuilder()
 
   const orientation = useDeviceOrientation()
 
@@ -29,7 +29,7 @@ const EmojiVision = ({ canvasRef }) => {
   useEffect(() => {
     if (
       canvasRef.current &&
-      paletteColors.length &&
+      palette &&
       mediaStatus === userMediaStatus.PLAYING
     ) {
       const ctx = canvasRef.current.getContext("2d")
@@ -42,7 +42,6 @@ const EmojiVision = ({ canvasRef }) => {
         facingMode,
         fontSize,
         palette,
-        paletteColors,
         saturate,
         windowWidth,
         windowHeight,
@@ -59,7 +58,6 @@ const EmojiVision = ({ canvasRef }) => {
     mediaStatus,
     orientation,
     palette,
-    paletteColors,
     saturate,
     video,
     windowWidth,

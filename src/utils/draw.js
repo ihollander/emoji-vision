@@ -1,6 +1,6 @@
 import RgbQuant from "rgbquant"
 
-import { colorToNumber } from "./color"
+import { colorToNumber, numberToColor } from "./color"
 
 const getResizedDimensions = ({
   videoWidth,
@@ -25,20 +25,16 @@ const getResizedDimensions = ({
   return { width, height, offsetX, offsetY }
 }
 
-const getQuantizedPixelData = (ctx, paletteColors) => {
-  const rawPixelData = ctx.getImageData(
-    0,
-    0,
-    ctx.canvas.width,
-    ctx.canvas.height,
-  ).data
+// TODO: OOP? palette.quantize(imageData) would be nice...
+const getQuantizedImage = (imageData, palette) => {
+  const paletteColors = Object.keys(palette).map(numberToColor)
 
   const quant = new RgbQuant({
     palette: paletteColors,
     colors: paletteColors.length,
   })
 
-  return quant.reduce(rawPixelData)
+  return quant.reduce(imageData)
 }
 
 const drawVideo = (
@@ -50,6 +46,7 @@ const drawVideo = (
   const resizeCtx = resizeCanvas.getContext("2d")
 
   // resize video
+  // TODO: fix scaling issue? (seems like this won't scale up right.......)
   resizeCtx.drawImage(src, 0, 0, resizeWidth, resizeHeight)
 
   // Apply filters to video
@@ -69,12 +66,15 @@ const drawVideo = (
   )
 }
 
-const drawEmojiPixels = (
-  ctx,
-  src,
-  { facingMode, fontSize, palette, paletteColors },
-) => {
-  const quantizedPixelData = getQuantizedPixelData(src, paletteColors)
+const drawEmojiPixels = (ctx, src, { facingMode, fontSize, palette }) => {
+  const imageData = src.getImageData(
+    0,
+    0,
+    src.canvas.width,
+    src.canvas.height,
+  ).data
+
+  const quantizedImage = getQuantizedImage(imageData, palette)
 
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   ctx.font = `${fontSize * 2}px sans-serif`
@@ -87,11 +87,11 @@ const drawEmojiPixels = (
   let nextX = startX
   let nextY = 0
 
-  for (let i = 0; i < quantizedPixelData.length; i += 4) {
+  for (let i = 0; i < quantizedImage.length; i += 4) {
     // read RGB pixels from imageData
-    const r = quantizedPixelData[i]
-    const g = quantizedPixelData[i + 1]
-    const b = quantizedPixelData[i + 2]
+    const r = quantizedImage[i]
+    const g = quantizedImage[i + 1]
+    const b = quantizedImage[i + 2]
 
     // find the emoji
     const emoji = palette[colorToNumber(r, g, b)]
@@ -153,6 +153,7 @@ const drawEmojiVideo = (
   ctx.canvas.height = windowHeight * 2
 
   // setup extra canvases
+  // TODO: do these offscreen if possible???
   const videoCanvas = document.createElement("canvas")
   const videoCtx = videoCanvas.getContext("2d")
 

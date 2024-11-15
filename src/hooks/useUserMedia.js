@@ -71,7 +71,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
         mediaStreamRef.current.getVideoTracks().forEach((track) => {
           track.stop()
         })
-        video.stop()
+        video.pause()
         mediaStreamRef.current = null
         setStatus(userMediaStatus.ENDED)
       }
@@ -83,7 +83,7 @@ export const useUserMedia = ({ orientation, facingMode }) => {
         mediaStreamRef.current.getVideoTracks().forEach((track) => {
           track.stop()
         })
-        video.stop()
+        video.pause()
         setStatus(userMediaStatus.ENDED)
       }
     }
