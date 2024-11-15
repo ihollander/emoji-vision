@@ -1,10 +1,20 @@
 import * as RadixDialog from "@radix-ui/react-dialog"
+import { useState } from "react"
 
 import { Button, Emoji } from "./Shared"
 
-const Modal = ({ children, emoji, label }) => {
+const Modal = ({ children, emoji, label, onClose }) => {
+  const [open, setOpen] = useState(false)
+
+  const handleOpenChange = (open) => {
+    if (!open && typeof onClose === "function") {
+      onClose()
+    }
+    setOpen(open)
+  }
+
   return (
-    <RadixDialog.Root>
+    <RadixDialog.Root open={open} onOpenChange={handleOpenChange}>
       <RadixDialog.Trigger asChild>
         <Button>
           <Emoji label={label} emoji={emoji} />

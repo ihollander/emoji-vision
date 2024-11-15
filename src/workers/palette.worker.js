@@ -1,7 +1,5 @@
-import { createPalette } from "../utils/color"
+import { buildEmojiColorMapping } from "../utils/palette"
 
-export const buildPaletteOffscreen = (emojiArray) => {
-  const canvas = new OffscreenCanvas(16, 16)
-
-  return createPalette(canvas, emojiArray)
+export const buildEmojiColorMappingOffscreen = (canvas, emojiArray) => {
+  return buildEmojiColorMapping(canvas, emojiArray)
 }

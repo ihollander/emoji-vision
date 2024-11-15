@@ -1,7 +1,3 @@
-import RgbQuant from "rgbquant"
-
-import { colorToNumber, numberToColor } from "./color"
-
 const getResizedDimensions = ({
   videoWidth,
   videoHeight,
@@ -23,18 +19,6 @@ const getResizedDimensions = ({
   }
 
   return { width, height, offsetX, offsetY }
-}
-
-// TODO: OOP? palette.quantize(imageData) would be nice...
-const getQuantizedImage = (imageData, palette) => {
-  const paletteColors = Object.keys(palette).map(numberToColor)
-
-  const quant = new RgbQuant({
-    palette: paletteColors,
-    colors: paletteColors.length,
-  })
-
-  return quant.reduce(imageData)
 }
 
 const drawVideo = (
@@ -74,7 +58,7 @@ const drawEmojiPixels = (ctx, src, { facingMode, fontSize, palette }) => {
     src.canvas.height,
   ).data
 
-  const quantizedImage = getQuantizedImage(imageData, palette)
+  const quantizedImage = palette.quantize(imageData)
 
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   ctx.font = `${fontSize * 2}px sans-serif`
@@ -94,7 +78,7 @@ const drawEmojiPixels = (ctx, src, { facingMode, fontSize, palette }) => {
     const b = quantizedImage[i + 2]
 
     // find the emoji
-    const emoji = palette[colorToNumber(r, g, b)]
+    const emoji = palette.emojiForRgbColor(r, g, b)
 
     // draw the emoji
     ctx.fillText(emoji, nextX, nextY)
@@ -139,7 +123,6 @@ const drawEmojiVideo = (
     fontSize,
     orientation,
     palette,
-    paletteColors,
     saturate,
     windowHeight,
     windowWidth,
@@ -155,7 +138,7 @@ const drawEmojiVideo = (
   // setup extra canvases
   // TODO: do these offscreen if possible???
   const videoCanvas = document.createElement("canvas")
-  const videoCtx = videoCanvas.getContext("2d")
+  const videoCtx = videoCanvas.getContext("2d", { willReadFrequently: true })
 
   videoCanvas.width = Math.floor(windowWidth / fontSize)
   videoCanvas.height = Math.floor(windowHeight / fontSize)
@@ -196,7 +179,6 @@ const drawEmojiVideo = (
       facingMode,
       fontSize,
       palette,
-      paletteColors,
     })
 
     if (debug) {

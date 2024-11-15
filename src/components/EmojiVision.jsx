@@ -1,9 +1,10 @@
 import { useEffect } from "react"
 
 import * as userMediaStatus from "../constants/userMedia"
-import { usePaletteBuilder, useUserMedia } from "../hooks"
+import { useUserMedia } from "../hooks"
 import useControls from "../hooks/useControls"
 import useDeviceOrientation from "../hooks/useDeviceOrientation"
+import usePalette from "../hooks/usePalette"
 import useWindowSize from "../hooks/useWindowSize"
 import drawEmojiVideo from "../utils/draw"
 
@@ -15,7 +16,7 @@ const EmojiVision = ({ canvasRef }) => {
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
   // emoji array used to build palette
-  const { palette } = usePaletteBuilder()
+  const { palette } = usePalette()
 
   const orientation = useDeviceOrientation()
 

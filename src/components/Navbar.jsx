@@ -1,51 +1,35 @@
-import { useEffect, useState } from "react"
+import { useRef } from "react"
 
 import { useEmojiFavicon, useVideoDeviceInfo } from "../hooks"
 import useControls from "../hooks/useControls"
+import usePalette from "../hooks/usePalette"
+import downloadImage from "../utils/download"
 import Controls from "./Controls"
 import Modal from "./Modal"
-import PaletteBuilder from "./PaletteBuilder"
 import { Button, ButtonLink, Emoji } from "./Shared"
 
 const Navbar = ({ canvasRef }) => {
+  const { palette, updatePalette } = usePalette()
+  const textareaRef = useRef()
+
   const videoInputDevices = useVideoDeviceInfo()
 
   const { facingMode, setFacingMode } = useControls()
 
   const [logo, setLogo] = useEmojiFavicon("📷")
-  const [isDownloading, setIsDownloading] = useState(false)
-
-  useEffect(() => {
-    if (isDownloading) {
-      // create background canvas so we don't end up with transparent background
-      const bgCanvas = document.createElement("canvas")
-      bgCanvas.width = canvasRef.current.width
-      bgCanvas.height = canvasRef.current.height
-
-      const ctx = bgCanvas.getContext("2d")
-      ctx.fillStyle = "#FFF8E7"
-      ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height)
-      ctx.drawImage(canvasRef.current, 0, 0)
-
-      const link = document.createElement("a")
-      document.body.append(link)
-      link.download = "emojivision.png"
-      link.href = bgCanvas.toDataURL()
-      link.click()
-      link.remove()
-
-      setLogo("📷")
-      setIsDownloading(false)
-    }
-  }, [canvasRef, isDownloading, setLogo])
 
   const handleCameraClick = () => {
     setLogo("📸")
-    setIsDownloading(true)
+    downloadImage(canvasRef.current)
+    setTimeout(() => setLogo("📷"), 1000) // just pretend this took 1 second to download
   }
 
   const handleFaceClick = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user")
+  }
+
+  const handlePaletteModalClose = () => {
+    updatePalette(textareaRef.current.value)
   }
 
   return (
@@ -62,8 +46,14 @@ const Navbar = ({ canvasRef }) => {
             />
           </Button>
         ) : null}
-        <Modal emoji="🎨" label="Palette">
-          <PaletteBuilder />
+        <Modal emoji="🎨" label="Palette" onClose={handlePaletteModalClose}>
+          <textarea
+            name="palette"
+            autoComplete="false"
+            className="h-[28rem] w-full resize-none bg-white text-lg"
+            defaultValue={palette.emoji}
+            ref={textareaRef}
+          />
         </Modal>
         <Modal emoji="🔧" label="Settings">
           <Controls />

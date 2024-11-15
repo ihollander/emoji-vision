@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
+
+const faviconCache = {}
 
 export const useEmojiFavicon = (emoji) => {
   const [value, setValue] = useState(emoji)
-  const cache = useRef({})
 
-  useEffect(() => {
+  const changeValue = useCallback((emoji) => {
+    setValue(emoji)
+
     // make new favicon link
     const updateFavicon = (imgUrl) => {
       const oldLink = document.querySelector("link[rel*='icon']")
@@ -21,8 +24,8 @@ export const useEmojiFavicon = (emoji) => {
       document.head.appendChild(newLink)
     }
 
-    if (cache.current[value]) {
-      updateFavicon(cache.current[value].src)
+    if (faviconCache[emoji]) {
+      updateFavicon(faviconCache[emoji].src)
     } else {
       // create image
       const canvas = document.createElement("canvas")
@@ -35,21 +38,21 @@ export const useEmojiFavicon = (emoji) => {
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
 
-      ctx.fillText(value, 32, 36)
+      ctx.fillText(emoji, 32, 36)
 
       const imgUrl = canvas.toDataURL()
 
       // cache image
       const image = new Image()
       image.onload = function () {
-        cache.current[value] = image
+        faviconCache[emoji] = image
       }
       image.src = imgUrl
 
       // update
       updateFavicon(imgUrl)
     }
-  }, [value])
+  }, [])
 
-  return [value, setValue]
+  return [value, changeValue]
 }

@@ -28,7 +28,7 @@ const Controls = () => {
     <div className="flex flex-col items-center gap-8">
       <Slider
         emoji="💡"
-        label="brightness"
+        label="Brightness"
         value={brightness}
         onChange={setBrightness}
         min={0.0}
@@ -63,7 +63,7 @@ const Controls = () => {
         ))}
       </div>
       <Button onClick={() => setDebug(!debug)}>
-        <Emoji label="Palette" emoji={debug ? "🦋" : "🐛"} />
+        <Emoji label="Debugging" emoji={debug ? "🦋" : "🐛"} />
       </Button>
     </div>
   )

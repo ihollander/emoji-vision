@@ -4,7 +4,7 @@ import ReactGA from "react-ga4"
 import ControlsProvider from "./components/ControlsProvider"
 import EmojiVision from "./components/EmojiVision"
 import Navbar from "./components/Navbar"
-import PaletteBuilderProvider from "./components/PaletteBuilderProvider"
+import PaletteProvider from "./components/PaletteProvider"
 
 function App() {
   // canvas for EmojiVision + image downloader in NavBar
@@ -20,10 +20,10 @@ function App() {
 
   return (
     <ControlsProvider>
-      <PaletteBuilderProvider>
+      <PaletteProvider>
         <Navbar canvasRef={canvasRef} />
         <EmojiVision canvasRef={canvasRef} />
-      </PaletteBuilderProvider>
+      </PaletteProvider>
     </ControlsProvider>
   )
 }
