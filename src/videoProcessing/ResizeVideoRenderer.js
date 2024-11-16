@@ -1,0 +1,67 @@
+export default class ResizeVideoRenderer {
+  constructor({
+    aspectRatio,
+    facingMode,
+    filter,
+    pixelVideoHeight,
+    pixelVideoWidth,
+    video,
+  }) {
+    this.facingMode = facingMode
+    this.filter = filter
+    this.pixelVideoWidth = pixelVideoWidth
+    this.pixelVideoHeight = pixelVideoHeight
+    this.video = video
+
+    const width = Math.floor(pixelVideoHeight * aspectRatio)
+    const height = Math.floor(pixelVideoWidth / aspectRatio)
+
+    this.offsetX =
+      this.width > pixelVideoWidth ? (width - pixelVideoWidth) / 2 : 0
+    this.offsetY =
+      this.height > pixelVideoHeight ? (height - pixelVideoHeight) / 2 : 0
+
+    // intermediary canvas for resizing video
+    this.resizeCanvas = document.createElement("canvas")
+    this.resizeCtx = this.resizeCanvas.getContext("2d")
+    this.resizeCanvas.width = width
+    this.resizeCanvas.height = height
+  }
+
+  process(ctx) {
+    this.resizeCtx.save()
+
+    // mirror the video if needed
+    if (this.facingMode === "user") {
+      this.resizeCtx.translate(this.resizeCanvas.width, 0)
+      this.resizeCtx.scale(-1, 1)
+    }
+
+    // setup filters
+    this.resizeCtx.filter = this.filter
+
+    // resize video
+    this.resizeCtx.drawImage(
+      this.video,
+      0,
+      0,
+      this.resizeCanvas.width,
+      this.resizeCanvas.height,
+    )
+
+    this.resizeCtx.restore()
+
+    // draw cropped/resized video to main canvas
+    ctx.drawImage(
+      this.resizeCanvas,
+      this.offsetX,
+      this.offsetY,
+      this.resizeCanvas.width - this.offsetX * 2,
+      this.resizeCanvas.height - this.offsetY * 2,
+      0,
+      0,
+      this.pixelVideoWidth,
+      this.pixelVideoHeight,
+    )
+  }
+}
