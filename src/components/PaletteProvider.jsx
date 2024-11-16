@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react"
 
 import { useLocalStorage } from "../hooks"
 import { PaletteContext } from "../hooks/usePalette"
-import Palette, { DEFAULT_EMOJI_LIST } from "../utils/palette"
+import Palette from "../utils/Palette"
 
 const PaletteProvider = ({ children }) => {
   const [emojiColorMapping, setEmojiColorMapping] = useLocalStorage(
@@ -12,7 +12,7 @@ const PaletteProvider = ({ children }) => {
 
   const updatePalette = useCallback(
     (emoji) => {
-      Palette.build(emoji || DEFAULT_EMOJI_LIST).then((palette) => {
+      Palette.build(emoji || Palette.defaultEmojiList).then((palette) => {
         setEmojiColorMapping(palette.emojiColorMapping)
       })
     },
@@ -21,7 +21,7 @@ const PaletteProvider = ({ children }) => {
 
   useEffect(() => {
     if (!emojiColorMapping) {
-      Palette.build(DEFAULT_EMOJI_LIST).then((palette) => {
+      Palette.build(Palette.defaultEmojiList).then((palette) => {
         setEmojiColorMapping(palette.emojiColorMapping)
       })
     }

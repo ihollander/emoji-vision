@@ -1,50 +1,20 @@
-import GraphemeSplitter from "grapheme-splitter"
 import RgbQuant from "rgbquant"
 import { endpointSymbol } from "vite-plugin-comlink/symbol"
 
 import emojiArray from "../emoji.json"
-import { analyzePixels, colorToNumber, numberToColor } from "./color"
+import { colorToNumber, numberToColor } from "./color"
+import EmojiColorMapper from "./EmojiColorMapper"
 
-const splitter = new GraphemeSplitter()
-
-const EMOJI_CANVAS_SIZE = 16
-
-export const DEFAULT_EMOJI_LIST = emojiArray.slice(0, 500).join("")
-
-// takes an emoji array, draws each emoji to canvas, and analyses average color
-// returns a mapping of emoji and the corresponding average color value
-export const buildEmojiColorMapping = (canvas, emojiArray) => {
-  const ctx = canvas.getContext("2d", { willReadFrequently: true })
-  ctx.font = "15px monospace"
-  ctx.textAlign = "center"
-  ctx.textBaseline = "middle"
-
-  return emojiArray.reduce((emojiColorMapping, emoji) => {
-    ctx.clearRect(0, 0, EMOJI_CANVAS_SIZE, EMOJI_CANVAS_SIZE)
-    ctx.fillText(emoji, 8, 10)
-
-    const pixelData = analyzePixels(
-      ctx.getImageData(0, 0, EMOJI_CANVAS_SIZE, EMOJI_CANVAS_SIZE).data,
-    )
-
-    if (pixelData !== null) {
-      const colorInt = colorToNumber(...pixelData.slice(0, 3))
-      emojiColorMapping[colorInt] = emoji
-    }
-
-    return emojiColorMapping
-  }, {})
-}
-
+// Stores mappings of color -> emoji
 export default class Palette {
-  static async build(emoji, { offscreen = false } = {}) {
-    const emojiArray = splitter.splitGraphemes(emoji)
+  static defaultEmojiList = emojiArray.slice(0, 500).join("")
 
-    if (!offscreen || window.OffscreenCanvas === undefined) {
+  static async build(emoji, { forceOnscreen = false } = {}) {
+    if (forceOnscreen || !("OffscreenCanvas" in window)) {
       const canvas = document.createElement("canvas")
-      canvas.width = EMOJI_CANVAS_SIZE
-      canvas.height = EMOJI_CANVAS_SIZE
-      const emojiColorMapping = buildEmojiColorMapping(canvas, emojiArray)
+      canvas.width = EmojiColorMapper.canvasSize
+      canvas.height = EmojiColorMapper.canvasSize
+      const emojiColorMapping = new EmojiColorMapper(canvas, emoji).call()
       return new Palette(emojiColorMapping)
     } else {
       // Trailing comma after new URL() breaks the regex that vite-plugin-comlink uses to identify this code,
@@ -57,15 +27,12 @@ export default class Palette {
       )
 
       try {
-        const canvas = new OffscreenCanvas(EMOJI_CANVAS_SIZE, EMOJI_CANVAS_SIZE)
         const emojiColorMapping =
-          await paletteWorker.buildEmojiColorMappingOffscreen(
-            canvas,
-            emojiArray,
-          )
+          await paletteWorker.buildEmojiColorMappingOffscreen(emoji)
         return new Palette(emojiColorMapping)
-      } catch {
-        return Palette.build(emojiArray, { offscreen: false })
+      } catch (err) {
+        console.error(err)
+        return Palette.build(emoji, { forceOnscreen: true })
       } finally {
         paletteWorker[endpointSymbol].terminate()
       }
@@ -92,6 +59,7 @@ export default class Palette {
   }
 
   emojiForRgbColor(r, g, b) {
-    return this.emojiColorMapping[colorToNumber(r, g, b)]
+    const colorNumber = colorToNumber(r, g, b)
+    return this.emojiColorMapping[colorNumber]
   }
 }

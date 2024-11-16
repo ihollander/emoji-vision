@@ -50,8 +50,8 @@ const Navbar = ({ canvasRef }) => {
           <textarea
             name="palette"
             autoComplete="false"
-            className="h-[28rem] w-full resize-none bg-white text-lg"
-            defaultValue={palette.emoji}
+            className="h-[28rem] w-full resize-none bg-white font-serif text-lg"
+            defaultValue={palette?.emoji}
             ref={textareaRef}
           />
         </Modal>

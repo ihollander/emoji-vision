@@ -1,3 +1,5 @@
+import { EMOJI_FONT_FAMILY } from "../constants/font"
+
 const getResizedDimensions = ({
   videoWidth,
   videoHeight,
@@ -57,7 +59,7 @@ const drawEmojiPixels = (ctx, src, { facingMode, fontSize, palette }) => {
   const quantizedImage = palette.quantize(imageData)
 
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-  ctx.font = `${fontSize * 2}px sans-serif`
+  ctx.font = `${fontSize * 2}px ${EMOJI_FONT_FAMILY}`
   ctx.textAlign = "left"
   ctx.textBaseline = "top"
 
