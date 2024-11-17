@@ -5,10 +5,10 @@ function buttonClasses({ size, selected }) {
   return classNames(
     "rounded px-4 py-1 shadow-md outline-2 hover:shadow-lg focus:outline",
     {
-      "text-md": size === "xs",
-      "text-xl": size === "sm",
-      "text-3xl": size === "md",
-      "text-4xl": size === "lg",
+      "text-sm lg:text-md": size === "sm",
+      "text-md lg:text-xl": size === "md",
+      "text-lg lg:text-3xl": size === "lg",
+      "text-xl lg:text-4xl": size === "xl",
       "bg-white": !selected,
       "bg-black": selected,
     },
@@ -16,7 +16,7 @@ function buttonClasses({ size, selected }) {
 }
 
 const Button = forwardRef(function Button(
-  { size = "lg", selected, ...rest },
+  { size = "xl", selected, ...rest },
   ref,
 ) {
   return (
@@ -25,7 +25,7 @@ const Button = forwardRef(function Button(
 })
 
 const ButtonLink = forwardRef(function ButtonLink(
-  { href, size = "lg", selected, ...rest },
+  { href, size = "xl", selected, ...rest },
   ref,
 ) {
   return (

@@ -4,10 +4,10 @@ import { Button, Emoji, Slider } from "./Shared"
 const sizes = [4, 8, 10, 16]
 
 const SIZE_MAP = {
-  4: "xs",
-  8: "sm",
-  10: "md",
-  16: "lg",
+  4: "sm",
+  8: "md",
+  10: "lg",
+  16: "xl",
 }
 
 const Controls = () => {

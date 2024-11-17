@@ -21,8 +21,8 @@ function App() {
   return (
     <ControlsProvider>
       <PaletteProvider>
-        <Navbar canvasRef={canvasRef} />
         <EmojiVision canvasRef={canvasRef} />
+        <Navbar canvasRef={canvasRef} />
       </PaletteProvider>
     </ControlsProvider>
   )

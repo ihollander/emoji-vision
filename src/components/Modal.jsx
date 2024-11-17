@@ -31,7 +31,7 @@ const Modal = ({ children, emoji, label, onClose }) => {
           </RadixDialog.Title>
           <div className="mb-4 flex justify-end">
             <RadixDialog.Close asChild>
-              <Button size="sm">
+              <Button size="md">
                 <Emoji emoji="🙅‍♀️" label="Close" />
               </Button>
             </RadixDialog.Close>
