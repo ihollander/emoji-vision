@@ -1,5 +1,6 @@
 import { useState } from "react"
 
+import * as facingModes from "../constants/facingMode"
 import { ControlsContext } from "../hooks/useControls"
 
 const ControlsProvider = ({ children }) => {
@@ -8,7 +9,7 @@ const ControlsProvider = ({ children }) => {
   const [contrast, setContrast] = useState("1.0")
   const [saturate, setSaturate] = useState("1.0")
   const [brightness, setBrightness] = useState("1.0")
-  const [facingMode, setFacingMode] = useState("user")
+  const [facingMode, setFacingMode] = useState(facingModes.USER)
 
   return (
     <ControlsContext.Provider

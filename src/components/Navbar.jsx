@@ -1,5 +1,6 @@
 import { useRef } from "react"
 
+import * as facingModes from "../constants/facingMode"
 import { useEmojiFavicon, useVideoDeviceInfo } from "../hooks"
 import useControls from "../hooks/useControls"
 import usePalette from "../hooks/usePalette"
@@ -25,7 +26,11 @@ const Navbar = ({ canvasRef }) => {
   }
 
   const handleFaceClick = () => {
-    setFacingMode(facingMode === "user" ? "environment" : "user")
+    setFacingMode(
+      facingMode === facingModes.USER
+        ? facingModes.ENVIRONMENT
+        : facingModes.USER,
+    )
   }
 
   const handlePaletteModalClose = () => {
@@ -42,7 +47,7 @@ const Navbar = ({ canvasRef }) => {
           <Button onClick={handleFaceClick}>
             <Emoji
               label="Change Camera"
-              emoji={facingMode === "user" ? "🙃" : "🙂"}
+              emoji={facingMode === facingModes.USER ? "🙃" : "🙂"}
             />
           </Button>
         ) : null}

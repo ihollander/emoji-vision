@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
+import * as facingModes from "../constants/facingMode"
 import * as userMediaStatus from "../constants/userMedia"
-import { usePageVisibility } from "."
+import { usePageVisibility, useVideoDeviceInfo } from "."
 
 // takes in constraint options (orientation and facingMode)
 // requests access to the user's webcam
@@ -10,6 +11,7 @@ import { usePageVisibility } from "."
 // - the camera being used
 // - status info
 export const useUserMedia = ({ orientation, facingMode }) => {
+  const devices = useVideoDeviceInfo()
   const mediaStreamRef = useRef()
   const videoRef = useRef(document.createElement("video"))
   const [activeCamera, setActiveCamera] = useState(null)
@@ -20,10 +22,19 @@ export const useUserMedia = ({ orientation, facingMode }) => {
 
   const isPageVisible = usePageVisibility()
 
+  // cleanup mediaStream when it's no longer needed (stop the tracks)
+  const cleanupTracks = useCallback(() => {
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop())
+      mediaStreamRef.current = null
+      setStatus(userMediaStatus.ENDED)
+    }
+  }, [])
+
   useEffect(() => {
     const video = videoRef.current
 
-    if (isPageVisible) {
+    if (devices.length > 0 && isPageVisible) {
       ;(async () => {
         setStatus(userMediaStatus.PENDING)
         // if the stream isn't set up or the camera switches, get a new mediaStream
@@ -32,20 +43,46 @@ export const useUserMedia = ({ orientation, facingMode }) => {
           prevFacingModeRef.current !== facingMode ||
           prevOrientationRef.current !== orientation
         ) {
-          try {
-            // for some reason, "environment" doesn't work (Pixel 4); need to use { ideal: "environment" } or { exact: "environment" }
-            const mode =
-              facingMode === "user" ? "user" : { ideal: "environment" }
+          let possibleFacingModes = []
+          if (facingMode === facingModes.USER) {
+            possibleFacingModes.push({ facingMode: "user" })
+          } else if (facingMode === facingModes.ENVIRONMENT) {
+            const probableEnvironmentCamera = devices.find((device) =>
+              device.label.includes("back"),
+            )
 
-            // get the stream
-            const stream = await navigator.mediaDevices.getUserMedia({
-              frameRate: 30,
-              video: { facingMode: mode },
-            })
+            // try using environment camera
+            possibleFacingModes.push({ facingMode: { ideal: "environment" } })
 
+            if (probableEnvironmentCamera) {
+              // if it doesn't work, try finding environment camera using device id
+              possibleFacingModes.push({
+                deviceId: probableEnvironmentCamera.deviceId,
+              })
+            }
+
+            // fallback on user-facing camera :(
+            possibleFacingModes.push({ facingMode: "user" })
+          }
+
+          let stream = null
+          for (const mode of possibleFacingModes) {
+            if (stream) break
+
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({
+                frameRate: 30,
+                video: mode,
+              })
+            } catch (err) {
+              console.error(err)
+            }
+          }
+
+          if (stream) {
             // save stream ref for cleanup
-            const videoTrack = stream.getVideoTracks()[0]
             mediaStreamRef.current = stream
+            const videoTrack = stream.getVideoTracks()[0]
 
             // pipe to video
             video.srcObject = stream
@@ -61,33 +98,17 @@ export const useUserMedia = ({ orientation, facingMode }) => {
             // set refs to let us check when the user switches modes
             prevFacingModeRef.current = facingMode
             prevOrientationRef.current = orientation
-          } catch {
+          } else {
             setStatus(userMediaStatus.ERROR)
           }
         }
       })()
     } else {
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getVideoTracks().forEach((track) => {
-          track.stop()
-        })
-        video.pause()
-        mediaStreamRef.current = null
-        setStatus(userMediaStatus.ENDED)
-      }
+      cleanupTracks()
     }
 
-    // cleanup mediaStream when it's no longer needed (stop the tracks)
-    return () => {
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getVideoTracks().forEach((track) => {
-          track.stop()
-        })
-        video.pause()
-        setStatus(userMediaStatus.ENDED)
-      }
-    }
-  }, [orientation, facingMode, isPageVisible])
+    return cleanupTracks
+  }, [cleanupTracks, devices, orientation, facingMode, isPageVisible])
 
   return { video: videoRef.current, status, activeCamera }
 }

@@ -1,3 +1,5 @@
+import * as facingModes from "../constants/facingMode"
+
 export default class ResizeVideoRenderer {
   constructor({
     aspectRatio,
@@ -32,7 +34,7 @@ export default class ResizeVideoRenderer {
     this.resizeCtx.save()
 
     // mirror the video if needed
-    if (this.facingMode === "user") {
+    if (this.facingMode === facingModes.USER) {
       this.resizeCtx.translate(this.resizeCanvas.width, 0)
       this.resizeCtx.scale(-1, 1)
     }
