@@ -106,7 +106,7 @@ const EmojiVision = ({ canvasRef }) => {
     windowHeight,
   ])
 
-  return <canvas className="h-screen w-screen bg-black" ref={canvasRef} />
+  return <canvas className="bg-gray-200 h-screen w-screen" ref={canvasRef} />
 }
 
 export default EmojiVision

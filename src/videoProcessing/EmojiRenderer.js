@@ -5,7 +5,7 @@ export default class EmojiRenderer {
     facingMode,
     fontSize,
     palette,
-    pixelMode = false,
+    pixelMode,
     pixelVideoWidth,
     pixelVideoHeight,
   }) {
@@ -30,7 +30,7 @@ export default class EmojiRenderer {
     const quantizedImage = this.palette.quantize(imageData)
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.font = `${this.fontSize}px ${EMOJI_FONT_FAMILY}`
+    ctx.font = `${this.fontSize - 1}px ${EMOJI_FONT_FAMILY}`
     ctx.textAlign = "left"
     ctx.textBaseline = "top"
 
@@ -45,10 +45,11 @@ export default class EmojiRenderer {
       const b = quantizedImage[i + 2]
 
       if (this.pixelMode) {
-        // colors-only/debugging mode
+        // fill background with computed emoji color
         ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
         ctx.fillRect(nextX, nextY, this.fontSize, this.fontSize)
       } else {
+        // draw emoji
         const emoji = this.palette.emojiForRgbColor(r, g, b)
         ctx.fillText(emoji, nextX, nextY)
       }
