@@ -45,7 +45,7 @@ const EmojiVision = ({ canvasRef }) => {
       const renderingContext = new RenderingContext(canvasRef.current)
 
       const pixelVideoWidth = Math.floor(windowWidth / fontSize)
-      const pixelVideoHeight = Math.floor(windowWidth / fontSize)
+      const pixelVideoHeight = Math.floor(windowHeight / fontSize)
 
       const resizeVideoRenderer = new ResizeVideoRenderer({
         aspectRatio: video.videoWidth / video.videoHeight,

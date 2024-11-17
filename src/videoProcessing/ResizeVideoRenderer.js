@@ -13,19 +13,19 @@ export default class ResizeVideoRenderer {
     this.pixelVideoHeight = pixelVideoHeight
     this.video = video
 
-    const width = Math.floor(pixelVideoHeight * aspectRatio)
-    const height = Math.floor(pixelVideoWidth / aspectRatio)
+    this.width = Math.floor(pixelVideoHeight * aspectRatio)
+    this.height = Math.floor(pixelVideoWidth / aspectRatio)
 
     this.offsetX =
-      this.width > pixelVideoWidth ? (width - pixelVideoWidth) / 2 : 0
+      this.width > pixelVideoWidth ? (this.width - pixelVideoWidth) / 2 : 0
     this.offsetY =
-      this.height > pixelVideoHeight ? (height - pixelVideoHeight) / 2 : 0
+      this.height > pixelVideoHeight ? (this.height - pixelVideoHeight) / 2 : 0
 
     // intermediary canvas for resizing video
     this.resizeCanvas = document.createElement("canvas")
     this.resizeCtx = this.resizeCanvas.getContext("2d")
-    this.resizeCanvas.width = width
-    this.resizeCanvas.height = height
+    this.resizeCanvas.width = this.width
+    this.resizeCanvas.height = this.height
   }
 
   process(ctx) {
@@ -41,13 +41,7 @@ export default class ResizeVideoRenderer {
     this.resizeCtx.filter = this.filter
 
     // resize video
-    this.resizeCtx.drawImage(
-      this.video,
-      0,
-      0,
-      this.resizeCanvas.width,
-      this.resizeCanvas.height,
-    )
+    this.resizeCtx.drawImage(this.video, 0, 0, this.width, this.height)
 
     this.resizeCtx.restore()
 
@@ -56,8 +50,8 @@ export default class ResizeVideoRenderer {
       this.resizeCanvas,
       this.offsetX,
       this.offsetY,
-      this.resizeCanvas.width - this.offsetX * 2,
-      this.resizeCanvas.height - this.offsetY * 2,
+      this.width - this.offsetX * 2,
+      this.height - this.offsetY * 2,
       0,
       0,
       this.pixelVideoWidth,

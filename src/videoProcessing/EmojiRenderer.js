@@ -54,11 +54,10 @@ export default class EmojiRenderer {
       }
 
       // offset next position
-      if (nextX + this.fontSize >= ctx.canvas.width - this.fontSize) {
+      nextX += this.fontSize
+      if (nextX + this.fontSize > ctx.canvas.width) {
         nextY += this.fontSize
         nextX = 0
-      } else {
-        nextX += this.fontSize
       }
     }
   }
