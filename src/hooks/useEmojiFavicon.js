@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef } from "react"
+import { useCallback, useState } from "react"
 
-export const useEmojiFavicon = emoji => {
+const faviconCache = {}
+
+export const useEmojiFavicon = (emoji) => {
   const [value, setValue] = useState(emoji)
-  const cache = useRef({})
 
-  useEffect(() => {
+  const changeValue = useCallback((emoji) => {
+    setValue(emoji)
+
     // make new favicon link
-    const updateFavicon = imgUrl => {
+    const updateFavicon = (imgUrl) => {
       const oldLink = document.querySelector("link[rel*='icon']")
       const newLink = document.createElement("link")
       newLink.id = "dynamic-favicon"
@@ -21,35 +24,35 @@ export const useEmojiFavicon = emoji => {
       document.head.appendChild(newLink)
     }
 
-    if (cache.current[value]) {
-      updateFavicon(cache.current[value].src)
+    if (faviconCache[emoji]) {
+      updateFavicon(faviconCache[emoji].src)
     } else {
       // create image
       const canvas = document.createElement("canvas")
       canvas.height = 64
       canvas.width = 64
 
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext("2d")
 
       ctx.font = "64px monospace"
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
 
-      ctx.fillText(value, 32, 36)
+      ctx.fillText(emoji, 32, 36)
 
       const imgUrl = canvas.toDataURL()
 
       // cache image
       const image = new Image()
       image.onload = function () {
-        cache.current[value] = image
+        faviconCache[emoji] = image
       }
       image.src = imgUrl
 
       // update
       updateFavicon(imgUrl)
     }
-  }, [value])
+  }, [])
 
-  return [value, setValue]
+  return [value, changeValue]
 }

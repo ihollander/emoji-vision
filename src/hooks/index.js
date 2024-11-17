@@ -1,19 +1,15 @@
-import { usePixelatedVideo } from './usePixelatedVideo'
-import { useUserMedia } from './useUserMedia'
-import { useMediaDeviceInfo } from './useMediaDeviceInfo'
-import { useDeviceDimensions } from './useDeviceDimensions'
-import { usePaletteBuilder } from './usePaletteBuilder'
-import { useLocalStorage } from './useLocalStorage'
-import { useEmojiFavicon } from './useEmojiFavicon'
-import { usePageVisibility } from './usePageVisibility'
+import useControls from "./useControls"
+import { useEmojiFavicon } from "./useEmojiFavicon"
+import { useLocalStorage } from "./useLocalStorage"
+import { usePageVisibility } from "./usePageVisibility"
+import { useUserMedia } from "./useUserMedia"
+import useVideoDeviceInfo from "./useVideoDeviceInfo"
 
 export {
-  usePixelatedVideo,
-  useUserMedia,
-  useMediaDeviceInfo,
-  useDeviceDimensions,
-  usePaletteBuilder,
-  useLocalStorage,
+  useControls,
   useEmojiFavicon,
-  usePageVisibility
+  useLocalStorage,
+  usePageVisibility,
+  useUserMedia,
+  useVideoDeviceInfo,
 }
